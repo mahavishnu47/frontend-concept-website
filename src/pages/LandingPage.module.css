@@ -1,0 +1,193 @@
+/* LandingPage.module.css - Modern and Eye-Catching Styles */
+
+.landingPage {
+    font-family: 'Arial', sans-serif; /* Choose a modern font */
+    color: #333;
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+  }
+  
+  /* --- Hero Section --- */
+  .heroSection {
+    background-color: #e0f7fa; /* Light teal background */
+    padding: 120px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row; /* Row layout for larger screens */
+    text-align: left; /* Left align text */
+  }
+  
+  @media (max-width: 768px) { /* Responsive for smaller screens (tablets) */
+    .heroSection {
+      flex-direction: column; /* Column layout on smaller screens */
+      text-align: center; /* Center text on smaller screens */
+      padding: 80px 20px;
+    }
+  }
+  
+  .heroContent {
+    max-width: 550px;
+    margin-right: 30px; /* Spacing between text and image */
+  }
+  
+  @media (max-width: 768px) {
+    .heroContent {
+      margin-right: 0; /* Remove margin on smaller screens */
+      margin-bottom: 40px; /* Add margin below text on smaller screens */
+      max-width: 100%; /* Full width on smaller screens */
+    }
+  }
+  
+  .heroTitle {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50; /* Darker text for title */
+  }
+  
+  .heroSubtitle {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 30px;
+  }
+  
+  .heroButton {
+    display: inline-block;
+    background-color: #00bcd4; /* Teal button color */
+    color: white;
+    padding: 15px 35px;
+    font-size: 1.1rem;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+  }
+  
+  .heroButton:hover {
+    background-color: #0097a7; /* Darker teal on hover */
+  }
+  
+  .heroImage {
+    max-width: 450px;
+  }
+  
+  @media (max-width: 768px) {
+    .heroImage {
+      max-width: 80%; /* Adjust image size for smaller screens */
+    }
+  }
+  
+  .heroImage img {
+    width: 100%;
+    height: auto;
+    display: block; /* Ensure image is block-level */
+  }
+  
+  
+  /* --- Features Section --- */
+  .featuresSection {
+    padding: 80px 20px;
+    background-color: #f8f8f8; /* Light grey background */
+    text-align: center;
+  }
+  
+  .sectionTitle {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 60px;
+    color: #2c3e50;
+  }
+  
+  .featuresGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .featureItem {
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* Subtle shadow */
+  }
+  
+  .featureIcon {
+    font-size: 3rem;
+    color: #00bcd4; /* Teal icon color */
+    margin-bottom: 20px;
+  }
+  
+  .featureItem h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #2c3e50;
+  }
+  
+  .featureItem p {
+    color: #666;
+  }
+  
+  
+  /* --- Call to Action Section --- */
+  .ctaSection {
+    background-color: #fff; /* White background for CTA */
+    padding: 100px 20px;
+    text-align: center;
+  }
+  
+  .ctaSubtitle {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 40px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .ctaButton {
+    display: inline-block;
+    background-color: #ffc107; /* Yellow/Amber CTA button color */
+    color: #333;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+  }
+  
+  .ctaButton:hover {
+    background-color: #ffb300; /* Darker yellow on hover */
+  }
+  
+  
+  /* --- Footer --- */
+  .footer {
+    background-color: #2c3e50; /* Dark blue footer background */
+    color: #eee; /* Light text color for footer */
+    padding: 30px 20px;
+    text-align: center;
+  }
+  
+  .footer nav {
+    margin-top: 15px;
+  }
+  
+  .footer nav a {
+    color: #ccc;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 0.9rem;
+  }
+  
+  .footer nav a:hover {
+    color: white;
+    text-decoration: underline;
+  }
+  
+  /* --- Animations (Placeholders - Implement using Framer Motion or CSS Animations) --- */
+  /* Example:  You could add animations to .featureItem on hover or on scroll reveal */
+  /* Example:  Hero section elements could fade in on page load */

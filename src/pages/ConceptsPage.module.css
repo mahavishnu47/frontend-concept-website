@@ -1,0 +1,72 @@
+/* src/pages/ConceptsPage/ConceptsPage.module.css */
+
+.conceptsPage {
+    padding: 60px 20px;
+    background-color: #f8f8f8; /* Light grey background */
+    min-height: 80vh;
+}
+
+.conceptsSection {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.conceptsTitle {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #2c3e50;
+}
+
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.filterSelect {
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    appearance: none; /* Remove default appearance */
+    -webkit-appearance: none; /* For Safari */
+    -moz-appearance: none; /* For Firefox */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 5px;
+    padding-right: 30px; /* Make space for dropdown arrow */
+    cursor: pointer;
+}
+
+.filterSelect:focus {
+    outline: none;
+    border-color: #00bcd4; /* Highlight border on focus */
+    box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2); /* Subtle focus ring */
+}
+
+.filterSelect::-ms-expand {
+    display: none; /* Hide default arrow in IE and Edge */
+}
+
+.conceptsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.loading, .error {
+    text-align: center;
+    padding: 30px;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.error {
+    color: #d32f2f; /* Red color for error message */
+    font-weight: bold;
+}

@@ -1,0 +1,93 @@
+/* LoginPage.module.css - Styles for Login Page */
+
+.loginPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Make sure it at least takes up viewport height */
+    padding: 40px 20px;
+    background-color: #f8f8f8; /* Light grey background */
+  }
+  
+  .loginSection {
+    background-color: #fff;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* More pronounced shadow */
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .loginTitle {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #2c3e50;
+  }
+  
+  .loginSubtitle {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+  }
+  
+  .loginForm {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Stretch form elements to full width */
+  }
+  
+  .formGroup {
+    margin-bottom: 20px;
+    text-align: left; /* Align labels to the left */
+  }
+  
+  .formLabel {
+    display: block; /* Make label take full width */
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .formInput {
+    width: 100%; /* Make input take full width of container */
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; /* Ensure padding and border are included in width */
+  }
+  
+  .loginButton {
+    background-color: #00bcd4; /* Teal button color - same as Register button */
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  
+  .loginButton:hover {
+    background-color: #0097a7; /* Darker teal on hover */
+  }
+  
+  .registerLink {
+    margin-top: 25px;
+    font-size: 0.95rem;
+    color: #777;
+  }
+  
+  .link {
+    color: #007bff; /* Blue link color - same as Register link */
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .link:hover {
+    text-decoration: underline;
+  }

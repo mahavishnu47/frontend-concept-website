@@ -1,0 +1,114 @@
+/* RegisterPage.module.css - Styles for Register Page */
+
+.registerPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Make sure it at least takes up viewport height */
+    padding: 40px 20px;
+    background-color: #f8f8f8; /* Light grey background */
+  }
+  
+  .registerSection {
+    background-color: #fff;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* More pronounced shadow */
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .registerTitle {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #2c3e50;
+  }
+  
+  .registerSubtitle {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+  }
+  
+  .registerForm {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Stretch form elements to full width */
+  }
+  
+  .formGroup {
+    margin-bottom: 20px;
+    text-align: left; /* Align labels to the left */
+  }
+  
+  .formLabel {
+    display: block; /* Make label take full width */
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .formInput {
+    width: 100%; /* Make input take full width of container */
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; /* Ensure padding and border are included in width */
+  }
+  
+  .registerButton {
+    background-color: #00bcd4; /* Teal button color */
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  
+  .registerButton:hover {
+    background-color: #0097a7; /* Darker teal on hover */
+  }
+  
+  .loginLink {
+    margin-top: 25px;
+    font-size: 0.95rem;
+    color: #777;
+  }
+  
+  .link {
+    color: #007bff; /* Blue link color */
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .link:hover {
+    text-decoration: underline;
+  }
+
+  /* ... (rest of your RegisterPage.module.css styles) ... */
+
+.errorMessage, .successMessage {
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  
+  .errorMessage {
+    background-color: #ffebee; /* Light red background */
+    color: #d32f2f; /* Dark red text */
+    border: 1px solid #ef9a9a; /* Light red border */
+  }
+  
+  .successMessage {
+    background-color: #e8f5e9; /* Light green background */
+    color: #388e3c; /* Dark green text */
+    border: 1px solid #a5d6a7; /* Light green border */
+  }
