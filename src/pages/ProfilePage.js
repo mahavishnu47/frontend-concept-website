@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styles from './ProfilePage.module.css';
-import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import API_BASE_URL from '../config';
+import { useNavigate } from 'react-router-dom';
 
 function ProfilePage() {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { getApiKey, isAuthenticated } = useContext(AuthContext); // Use AuthContext
+  const { getApiKey, isAuthenticated, logout } = useContext(AuthContext); // Get logout from context
+  const navigate = useNavigate(); // Hook for redirection
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -37,7 +39,12 @@ function ProfilePage() {
     };
 
     fetchUserProfile();
-  }, [getApiKey, isAuthenticated]); // Dependency array
+  }, [getApiKey, isAuthenticated]);
+
+  const handleLogout = () => {
+    logout(); // Call logout function from AuthContext
+    navigate('/'); // Optionally redirect to landing page after logout (already done in logout function, but can add here for extra measure)
+  };
 
 
   if (loading) {
@@ -64,6 +71,7 @@ function ProfilePage() {
           <p><strong>Created At:</strong> {new Date(userProfile.created_at).toLocaleDateString()}</p>
           {/* Add more profile information as needed */}
         </div>
+        <button onClick={handleLogout} className={styles.logoutButton}>Logout</button> {/* Logout button in Profile Page */}
       </section>
     </div>
   );

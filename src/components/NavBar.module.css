@@ -39,3 +39,38 @@
     color: white;
     text-decoration: underline;
   }
+
+  /* src/components/Navbar/Navbar.module.css */
+
+/* ... (rest of your Navbar.module.css styles - navbar, logoLink, navLinks, navLinks li, navLink, navLink:hover) ... */
+
+.navButton {
+    background: none; /* Make button look like a text link */
+    color: #eee; /* Light text color */
+    border: none;
+    padding: 10px 15px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-family: inherit; /* Inherit font from parent */
+  }
+  
+  .navButton:hover {
+    color: white;
+    text-decoration: underline;
+  }
+  
+  .userGreeting {
+    color: #eee; /* Light text color for greeting */
+    margin-left: 30px;
+    font-size: 1.1rem;
+  }
+  
+  .greetingLink { /* Styles for the Link wrapping the greeting */
+    color: inherit; /* Inherit color from userGreeting */
+    text-decoration: none; /* Remove underline */
+  }
+  
+  .greetingLink:hover {
+    text-decoration: underline; /* Add underline on hover */
+  }

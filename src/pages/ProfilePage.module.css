@@ -38,3 +38,24 @@
     margin-bottom: 10px;
     color: #555;
   }
+
+  /* src/pages/ProfilePage/ProfilePage.module.css */
+
+/* ... (rest of your ProfilePage.module.css styles - profilePage, profileSection, profileTitle, profileDetails, profileDetails p, loading, error) ... */
+
+.logoutButton {
+    background-color: #d32f2f; /* Red logout button color */
+    color: white;
+    padding: 12px 25px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+    font-weight: bold;
+  }
+  
+  .logoutButton:hover {
+    background-color: #b71c1c; /* Darker red on hover */
+  }
