@@ -1,78 +1,84 @@
 import React, { useState, useEffect, useContext } from 'react';
-import styles from './ProfilePage.module.css';
-import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
+import WebsiteCard from '../components/WebsiteCard/WebsiteCard';
 import API_BASE_URL from '../config';
-import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import styles from './ProfilePage.module.css';
+
+function CollapsibleItem({ title, children }) {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className={styles.collapsibleItem}>
+      <div className={styles.collapsibleHeader} onClick={() => setIsOpen(!isOpen)}>
+        {title} {isOpen ? '-' : '+'}
+      </div>
+      {isOpen && <div className={styles.collapsibleContent}>{children}</div>}
+    </div>
+  );
+}
 
 function ProfilePage() {
-  const [userProfile, setUserProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { getApiKey, isAuthenticated, logout } = useContext(AuthContext); // Get logout from context
-  const navigate = useNavigate(); // Hook for redirection
+  const { user, getApiKey } = useContext(AuthContext);
+  const [likedWebsites, setLikedWebsites] = useState([]);
+  const [sharedWebsites, setSharedWebsites] = useState([]);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      setLoading(true);
-      setError(null);
+    async function fetchWebsites() {
       try {
         const apiKey = getApiKey();
-        if (!isAuthenticated || !apiKey) {
-          setError("Not authenticated or API key missing.");
-          setLoading(false);
-          return;
-        }
-
-        const response = await axios.get(`${API_BASE_URL}/auth/me`, { // Fetch profile data from /api/auth/me
-          headers: {
-            'Authorization': `Bearer ${apiKey}`
-          }
-        });
-        setUserProfile(response.data.user); // Set user profile data
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-        setError('Failed to load profile information.');
-        setLoading(false);
+        // Adjust these endpoints as per your #file:routes.py definitions
+        const likedResponse = await axios.get(
+          `${API_BASE_URL}/users/${user.user_id}/liked-websites`,
+          { headers: { 'Authorization': `Bearer ${apiKey}` } }
+        );
+        const sharedResponse = await axios.get(
+          `${API_BASE_URL}/users/${user.user_id}/shared-websites`,
+          { headers: { 'Authorization': `Bearer ${apiKey}` } }
+        );
+        setLikedWebsites(likedResponse.data);
+        setSharedWebsites(sharedResponse.data);
+      } catch (err) {
+        console.error('Error fetching profile websites:', err);
       }
-    };
-
-    fetchUserProfile();
-  }, [getApiKey, isAuthenticated]);
-
-  const handleLogout = () => {
-    logout(); // Call logout function from AuthContext
-    navigate('/'); // Optionally redirect to landing page after logout (already done in logout function, but can add here for extra measure)
-  };
-
-
-  if (loading) {
-    return <div className={styles.loading}>Loading profile...</div>;
-  }
-
-  if (error) {
-    return <div className={styles.error}>{error}</div>;
-  }
-
-  if (!userProfile) {
-    return <div>Could not load user profile.</div>; // Fallback if userProfile is still null after loading
-  }
-
+    }
+    if (user) {
+      fetchWebsites();
+    }
+  }, [user, getApiKey]);
 
   return (
-    <div className={styles.profilePage}>
-      <section className={styles.profileSection}>
-        <h2 className={styles.profileTitle}>Your Profile</h2>
-        <div className={styles.profileDetails}>
-          <p><strong>Username:</strong> {userProfile.username}</p>
-          <p><strong>Email:</strong> {userProfile.email}</p>
-          <p><strong>User ID:</strong> {userProfile.user_id}</p>
-          <p><strong>Created At:</strong> {new Date(userProfile.created_at).toLocaleDateString()}</p>
-          {/* Add more profile information as needed */}
-        </div>
-        <button onClick={handleLogout} className={styles.logoutButton}>Logout</button> {/* Logout button in Profile Page */}
-      </section>
+    <div className={styles.profileContainer}>
+      <h2>Profile</h2>
+      <div>
+        <strong>Username:</strong> {user.username} <br />
+        <strong>Email:</strong> {user.email}
+      </div>
+
+      <div className={styles.section}>
+        <h3 className={styles.sectionTitle}>Liked Websites</h3>
+        {likedWebsites.length > 0 ? (
+          likedWebsites.map(website => (
+            <CollapsibleItem key={website.website_id} title={`Website ID ${website.website_id}`}>
+              <WebsiteCard website={website} />
+            </CollapsibleItem>
+          ))
+        ) : (
+          <p>No liked websites.</p>
+        )}
+      </div>
+
+      <div className={styles.section}>
+        <h3 className={styles.sectionTitle}>Shared Websites</h3>
+        {sharedWebsites.length > 0 ? (
+          sharedWebsites.map(website => (
+            <CollapsibleItem key={website.website_id} title={`Website ID ${website.website_id}`}>
+              <WebsiteCard website={website} />
+            </CollapsibleItem>
+          ))
+        ) : (
+          <p>No shared websites.</p>
+        )}
+      </div>
     </div>
   );
 }

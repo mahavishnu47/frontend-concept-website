@@ -10,7 +10,12 @@ function ConceptCard({ concept }) {
       <p className={styles.conceptSyllabus}>Medium: {concept.medium}</p>
       <p className={styles.conceptTopic}>Subject: {concept.subject}</p>
       {/* You can add more details or customize the display as needed */}
-      <Link to={`/concept/${concept.concept_id}`} className={styles.learnButton}>Learn More</Link>
+      <Link 
+        to={concept.conceptName ? `/websites?conceptName=${encodeURIComponent(concept.conceptName)}` : '/websites'} 
+        className={styles.learnButton}
+      >
+        Learn More
+      </Link>
     </div>
   );
 }

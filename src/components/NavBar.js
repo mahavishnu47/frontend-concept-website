@@ -18,6 +18,22 @@ function Navbar() {
             <li>
               <Link to="/concepts" className={styles.navLink}>Concepts</Link>
             </li>
+            <li>
+              <Link to="/websites" className={styles.navLink}>Websites</Link>
+            </li>
+            <li>
+              <Link to="/communities" className={styles.navLink}>Communities</Link> {/* New link */}
+            </li>
+            <li>
+              <Link to="/create-explanation" className={styles.navLink}>Create Explanation</Link>
+            </li>
+            {isAuthenticated && user?.is_admin && (
+              <li>
+                <Link to="/admin/upload-concept" className={styles.navLink}>
+                  Admin Upload
+                </Link>
+              </li>
+            )}
             {/* Removed Logout Button from here */}
           </>
         ) : ( // Conditionally render links if NOT authenticated
