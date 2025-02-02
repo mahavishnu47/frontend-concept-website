@@ -11,8 +11,14 @@ function ConceptsPage() {
     const [error, setError] = useState(null);
     const [gradeFilter, setGradeFilter] = useState('');
     const [boardFilter, setBoardFilter] = useState('');
-    const [syllabusFilter, setSyllabusFilter] = useState('');
+    const [subjectFilter, setsubjectFilter] = useState('');
     const { getApiKey, isAuthenticated } = useContext(AuthContext);
+
+    // New states for filter options
+    const [grades, setGrades] = useState([]);
+    const [boards, setBoards] = useState([]);
+    const [subjects, setSubjects] = useState([]);
+    const [filterLoading, setFilterLoading] = useState(true);
 
     useEffect(() => {
         const fetchConcepts = async () => {
@@ -29,7 +35,7 @@ function ConceptsPage() {
                 const params = {};
                 if (gradeFilter) params.grade = gradeFilter;
                 if (boardFilter) params.board = boardFilter;
-                if (syllabusFilter) params.syllabus = syllabusFilter;
+                if (subjectFilter) params.subject = subjectFilter;
 
                 const response = await axios.get(`${API_BASE_URL}/concepts`, {
                     headers: {
@@ -47,12 +53,51 @@ function ConceptsPage() {
         };
 
         fetchConcepts();
-    }, [getApiKey, isAuthenticated, gradeFilter, boardFilter, syllabusFilter]); // Re-fetch when filters change
+    }, [getApiKey, isAuthenticated, gradeFilter, boardFilter, subjectFilter]); // Re-fetch when filters change
+
+    // Fetch filter options
+    useEffect(() => {
+        const fetchFilterOptions = async () => {
+            setFilterLoading(true);
+            try {
+                const apiKey = getApiKey();
+                if (!isAuthenticated || !apiKey) return;
+
+                const headers = { 'Authorization': `Bearer ${apiKey}` };
+
+                // Fetch all filter options at once
+                const [gradesRes, boardsRes, subjectsRes] = await Promise.all([
+                    axios.get(`${API_BASE_URL}/grades`, { headers }),
+                    axios.get(`${API_BASE_URL}/boards`, { headers }),
+                    axios.get(`${API_BASE_URL}/subjects`, { headers })
+                ]);
+
+                setGrades(gradesRes.data);
+                setBoards(boardsRes.data);
+                setSubjects(subjectsRes.data);
+            } catch (error) {
+                console.error('Error fetching filter options:', error);
+            }
+            setFilterLoading(false);
+        };
+
+        fetchFilterOptions();
+    }, [getApiKey, isAuthenticated]); // Remove dependencies that trigger reloads
 
     const handleFilterChange = (filterType, value) => {
-        if (filterType === 'grade') setGradeFilter(value);
-        else if (filterType === 'board') setBoardFilter(value);
-        else if (filterType === 'syllabus') setSyllabusFilter(value);
+        switch(filterType) {
+            case 'grade':
+                setGradeFilter(value);
+                break;
+            case 'board':
+                setBoardFilter(value);
+                break;
+            case 'subject':
+                setsubjectFilter(value);
+                break;
+            default:
+                break;
+        }
     };
 
 
@@ -70,28 +115,44 @@ function ConceptsPage() {
                 <h2 className={styles.conceptsTitle}>Explore Concepts</h2>
 
                 <div className={styles.filters}>
-                    <select className={styles.filterSelect} value={gradeFilter} onChange={(e) => handleFilterChange('grade', e.target.value)}>
-                        <option value="">All Grades</option>
-                        <option value="9">Grade 9</option>
-                        <option value="10">Grade 10</option>
-                        <option value="11">Grade 11</option>
-                        <option value="12">Grade 12</option>
-                        {/* Add more grades as needed */}
-                    </select>
+                    {filterLoading ? (
+                        <div>Loading filters...</div>
+                    ) : (
+                        <>
+                            <select 
+                                className={styles.filterSelect} 
+                                value={gradeFilter} 
+                                onChange={(e) => handleFilterChange('grade', e.target.value)}
+                            >
+                                <option value="">All Grades</option>
+                                {grades.map(grade => (
+                                    <option key={grade} value={grade}>{grade}</option>
+                                ))}
+                            </select>
 
-                    <select className={styles.filterSelect} value={boardFilter} onChange={(e) => handleFilterChange('board', e.target.value)}>
-                        <option value="">All Boards</option>
-                        <option value="CBSE">CBSE</option>
-                        {/* Add more boards as needed */}
-                    </select>
+                            <select 
+                                className={styles.filterSelect} 
+                                value={boardFilter} 
+                                onChange={(e) => handleFilterChange('board', e.target.value)}
+                            >
+                                <option value="">All Boards</option>
+                                {boards.map(board => (
+                                    <option key={board} value={board}>{board}</option>
+                                ))}
+                            </select>
 
-                    <select className={styles.filterSelect} value={syllabusFilter} onChange={(e) => handleFilterChange('syllabus', e.target.value)}>
-                        <option value="">All Syllabi</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Science">Science</option>
-                        <option value="Computer Science">Computer Science</option>
-                        {/* Add more syllabi as needed */}
-                    </select>
+                            <select 
+                                className={styles.filterSelect} 
+                                value={subjectFilter} 
+                                onChange={(e) => handleFilterChange('subject', e.target.value)}
+                            >
+                                <option value="">All Subjects</option>
+                                {subjects.map(subject => (
+                                    <option key={subject} value={subject}>{subject}</option>
+                                ))}
+                            </select>
+                        </>
+                    )}
                 </div>
 
                 <div className={styles.conceptsGrid}>

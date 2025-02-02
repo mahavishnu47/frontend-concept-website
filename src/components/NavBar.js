@@ -18,9 +18,6 @@ function Navbar() {
             <li>
               <Link to="/concepts" className={styles.navLink}>Concepts</Link>
             </li>
-            <li>
-              <Link to="/concepts" className={styles.navLink}>Learn New</Link> {/* Initially link to Concepts page */}
-            </li>
             {/* Removed Logout Button from here */}
           </>
         ) : ( // Conditionally render links if NOT authenticated
