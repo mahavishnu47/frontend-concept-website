@@ -24,7 +24,12 @@ function FullScreenWebsite() {
                     headers: { 'Authorization': `Bearer ${apiKey}` }
                 });
                 console.log('Response received:', response.data);
-                setWebsiteContent(response.data.website_code);
+                // Ensure the returned code is a complete HTML document
+                if (response.data && response.data.website_code) {
+                    setWebsiteContent(response.data.website_code);
+                } else {
+                    console.error('Website code not found or incomplete.');
+                }
             } catch (error) {
                 console.error('Error fetching website:', error);
             } finally {
@@ -61,15 +66,14 @@ function FullScreenWebsite() {
                 srcDoc={websiteContent}
                 className={styles.websiteFrame}
                 title="Educational Website"
-                sandbox="allow-scripts allow-same-origin allow-popups"
                 frameBorder="0"
                 allowFullScreen
                 style={{
                     width: '100%',
                     height: '100vh',
-                    border: 'none',
-                    overflow: 'hidden'
+                    border: 'none'
                 }}
+                sandbox="allow-scripts allow-same-origin allow-popups"
             />
         </div>
     );

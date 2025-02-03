@@ -1,0 +1,81 @@
+:root {
+  /* Light theme */
+  --bg-primary: #F8F9FD;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F0F2F5;
+  --text-primary: #2C3E50;
+  --text-secondary: #8795A1;
+  --primary-color: #4A90E2;
+  --secondary-color: #6C63FF;
+  --border-color: #E1E8ED;
+  --card-bg: #FFFFFF;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --hover-bg: #F5F8FA;
+  --success-color: #2ECC71;
+  --error-color: #E74C3C;
+}
+
+[data-theme='dark'] {
+  --bg-primary: #121212;
+  --bg-secondary: #1E1E1E;
+  --bg-tertiary: #2D2D2D;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B0B0B0;
+  --primary-color: #6C63FF;
+  --secondary-color: #4A90E2;
+  --border-color: #404040;
+  --card-bg: #2D2D2D;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --hover-bg: #353535;
+  --success-color: #2ECC71;
+  --error-color: #E74C3C;
+}
+
+/* Global styles */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+/* Card styles */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+/* Button styles */
+.button {
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+}
+
+/* Input styles */
+input, textarea {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+/* Modal styles */
+.modal {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+/* Navigation styles */
+nav {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Table styles */
+table {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+tr:hover {
+  background-color: var(--hover-bg);
+}

@@ -2,7 +2,7 @@
 
 .conceptsPage {
     padding: 60px 20px;
-    background-color: #f8f8f8; /* Light grey background */
+    background-color: var(--bg-primary); /* Changed from hardcoded #f8f8f8 to theme variable */
     min-height: 80vh;
 }
 
@@ -16,7 +16,7 @@
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 40px;
-    color: #2c3e50;
+    color: var(--text-primary); /* Changed from hardcoded #2c3e50 to theme variable */
 }
 
 .filters {
@@ -29,7 +29,9 @@
 .filterSelect {
     padding: 10px 15px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
     font-size: 1rem;
     appearance: none; /* Remove default appearance */
     -webkit-appearance: none; /* For Safari */
@@ -69,4 +71,105 @@
 .error {
     color: #d32f2f; /* Red color for error message */
     font-weight: bold;
+}
+
+.conceptsContainer {
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  padding: 2rem;
+  color: var(--text-primary);
+}
+
+.filterSection {
+  background-color: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.filterGroup {
+  margin-bottom: 1rem;
+}
+
+.filterGroup label {
+  color: var(--text-secondary);
+  margin-right: 1rem;
+}
+
+select, input {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-right: 1rem;
+}
+
+.conceptGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.conceptCard {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  transition: transform 0.3s ease;
+}
+
+.conceptCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.conceptTitle {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.conceptMeta {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.actionButton {
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.actionButton:hover {
+  background-color: var(--secondary-color);
+}
+
+.noResults {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .conceptsContainer {
+    padding: 1rem;
+  }
+  
+  .filterSection {
+    padding: 1rem;
+  }
+  
+  .conceptGrid {
+    grid-template-columns: 1fr;
+  }
 }

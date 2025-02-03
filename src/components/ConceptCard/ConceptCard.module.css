@@ -1,47 +1,47 @@
 /* src/components/ConceptCard/ConceptCard.module.css */
 
 .conceptCard {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-    padding: 25px;
-    text-align: left;
-    transition: transform 0.2s ease-in-out;
-    cursor: pointer; /* Indicate it's clickable */
-  }
-  
-  .conceptCard:hover {
-    transform: translateY(-5px); /* Slight lift on hover */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* More pronounced shadow on hover */
-  }
-  
-  .conceptName {
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #2c3e50;
-  }
-  
-  .conceptGrade,
-  .conceptSyllabus,
-  .conceptTopic {
-    color: #555;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-  }
-  
-  .learnButton {
-    display: inline-block;
-    background-color: #00bcd4; /* Teal button color */
-    color: white;
-    padding: 10px 20px;
-    font-size: 0.9rem;
-    text-decoration: none;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-    margin-top: 15px;
-  }
-  
-  .learnButton:hover {
-    background-color: #0097a7; /* Darker teal on hover */
-  }
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  transition: transform 0.3s ease;
+  cursor: pointer; /* Indicate it's clickable */
+}
+
+.conceptCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.conceptName {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.conceptGrade, 
+.conceptSyllabus, 
+.conceptTopic {
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.learnButton {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.learnButton:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+}

@@ -17,6 +17,7 @@ function CommunityPage() {
     const fetchMessages = async () => {
       try {
         const apiKey = getApiKey();
+        if (!community_id || !apiKey) return;  // remove user check
         const response = await axios.get(
           `${API_BASE_URL}/communities/${community_id}/messages`,
           { headers: { 'Authorization': `Bearer ${apiKey}` } }
@@ -31,10 +32,7 @@ function CommunityPage() {
       }
     };
 
-    // Only fetch if we have necessary data
-    if (community_id && user && getApiKey()) {
-      fetchMessages();
-    }
+    fetchMessages();
 
     socket.current = io(`${API_BASE_URL}/community`, { 
       path: '/socket.io',
@@ -60,7 +58,7 @@ function CommunityPage() {
     return () => {
       socket.current.disconnect();
     };
-  }, [community_id, getApiKey, user]);
+  }, [community_id, getApiKey]); // Removed 'user' dependency
 
   const sendMessage = (e) => {
     e.preventDefault();

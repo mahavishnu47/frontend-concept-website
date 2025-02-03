@@ -142,7 +142,8 @@ function WebsiteCard({ website }) {
           srcDoc={website.website_code}
           title={`Website ${website.website_id}`}
           className={styles.websiteFrame}
-          sandbox="allow-scripts allow-popups"
+          // Updated sandbox attribute to allow same-origin 
+          sandbox="allow-scripts allow-same-origin allow-popups"
         />
       </div>
 

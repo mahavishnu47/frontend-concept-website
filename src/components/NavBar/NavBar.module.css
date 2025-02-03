@@ -1,0 +1,18 @@
+.navbar {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.navLink {
+  color: var(--text-secondary);
+}
+
+.navLink:hover {
+  color: var(--primary-color);
+  background-color: var(--hover-bg);
+}
+
+.activeLink {
+  color: var(--primary-color);
+}

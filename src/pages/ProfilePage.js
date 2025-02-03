@@ -4,6 +4,8 @@ import WebsiteCard from '../components/WebsiteCard/WebsiteCard';
 import API_BASE_URL from '../config';
 import { AuthContext } from '../context/AuthContext';
 import styles from './ProfilePage.module.css';
+import { useNavigate } from 'react-router-dom';
+import { ThemeContext } from '../context/ThemeContext';
 
 function CollapsibleItem({ title, children }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,9 +20,12 @@ function CollapsibleItem({ title, children }) {
 }
 
 function ProfilePage() {
-  const { user, getApiKey } = useContext(AuthContext);
+  const { user, getApiKey, logout } = useContext(AuthContext);
+  const { isDarkMode, setIsDarkMode } = useContext(ThemeContext);
   const [likedWebsites, setLikedWebsites] = useState([]);
   const [sharedWebsites, setSharedWebsites] = useState([]);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchWebsites() {
@@ -46,13 +51,65 @@ function ProfilePage() {
     }
   }, [user, getApiKey]);
 
+  const handleLogoutConfirm = () => {
+    // Remove only the authentication token, for example 'apiKey'
+    localStorage.removeItem('apiKey');
+    // If you store user info in localStorage, remove that too, e.g.:
+    localStorage.removeItem('user');
+    if (logout) logout();
+    navigate('/');
+  };
+
   return (
     <div className={styles.profileContainer}>
+      {/* Add this near the top of your profile content */}
+      <div className={styles.themeToggle}>
+        <label className={styles.switch}>
+          <input 
+            type="checkbox"
+            checked={isDarkMode}
+            onChange={() => setIsDarkMode(!isDarkMode)}
+          />
+          <span className={styles.slider}></span>
+        </label>
+        <span>{isDarkMode ? 'Dark Mode' : 'Light Mode'}</span>
+      </div>
+      
       <h2>Profile</h2>
       <div>
         <strong>Username:</strong> {user.username} <br />
         <strong>Email:</strong> {user.email}
       </div>
+
+      <h1>Welcome, {user ? user.name : 'User'}</h1>
+      <button 
+        className={styles.ctaButton} 
+        onClick={() => setShowLogoutModal(true)}
+      >
+        Log Out
+      </button>
+      
+      {showLogoutModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <p>Are you sure you want to log out?</p>
+            <div className={styles.modalActions}>
+              <button 
+                className={styles.ctaButton} 
+                onClick={handleLogoutConfirm}
+              >
+                Log Out
+              </button>
+              <button 
+                className={styles.cancelButton} 
+                onClick={() => setShowLogoutModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Liked Websites</h3>
