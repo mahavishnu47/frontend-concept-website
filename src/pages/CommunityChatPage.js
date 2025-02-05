@@ -11,16 +11,21 @@ function CommunityChatPage() {
   const [newMsg, setNewMsg] = useState('');
 
   useEffect(() => {
+    console.log("[DEBUG] CommunityChatPage useEffect triggered with community_id:", community_id);
     async function fetchMessages() {
       try {
         const apiKey = getApiKey();
+        console.log('Fetching messages for community_id:', community_id);
+        console.log('Using API key:', apiKey);
+        
         const response = await axios.get(
-          `${API_BASE_URL}/communities/${community_id}/messages`,
+          `${API_BASE_URL}/chat_messages?website_id=${community_id}`,
           { headers: { 'Authorization': `Bearer ${apiKey}` } }
         );
+        console.log('Received messages:', response.data);
         setMessages(response.data);
       } catch (err) {
-        console.error('Error fetching messages:', err);
+        console.error('Error fetching messages:', err.response?.data || err.message);
       }
     }
     fetchMessages();
@@ -28,18 +33,23 @@ function CommunityChatPage() {
   }, [community_id, getApiKey]);
 
   const sendMessage = async () => {
+    console.log("[DEBUG] sendMessage triggered with newMsg:", newMsg);
     if (!newMsg.trim()) return;
     try {
       const apiKey = getApiKey();
+      console.log("[DEBUG] Sending message with API_BASE_URL:", API_BASE_URL);
+      console.log("[DEBUG] Payload:", { website_id: community_id, user_id: user.user_id, content: newMsg });
+      
       const response = await axios.post(
-        `${API_BASE_URL}/communities/${community_id}/messages`,
-        { user_id: user.user_id, content: newMsg },
+        `${API_BASE_URL}/chat_messages`,
+        { website_id: community_id, user_id: user.user_id, content: newMsg },
         { headers: { 'Authorization': `Bearer ${apiKey}` } }
       );
-      setMessages(prev => [...prev, response.data.data]);
+      console.log("[DEBUG] Message sent, response:", response.data);
+      setMessages(prev => [...prev, response.data]);
       setNewMsg('');
     } catch (err) {
-      console.error('Error sending message:', err);
+      console.error('Error sending message:', err.response?.data || err.message);
     }
   };
 

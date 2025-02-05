@@ -24,6 +24,7 @@ function ProfilePage() {
   const { isDarkMode, setIsDarkMode } = useContext(ThemeContext);
   const [likedWebsites, setLikedWebsites] = useState([]);
   const [sharedWebsites, setSharedWebsites] = useState([]);
+  const [createdWebsites, setCreatedWebsites] = useState([]); // New state
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
 
@@ -31,17 +32,24 @@ function ProfilePage() {
     async function fetchWebsites() {
       try {
         const apiKey = getApiKey();
-        // Adjust these endpoints as per your #file:routes.py definitions
+        // Fetch Liked Websites
         const likedResponse = await axios.get(
           `${API_BASE_URL}/users/${user.user_id}/liked-websites`,
           { headers: { 'Authorization': `Bearer ${apiKey}` } }
         );
+        setLikedWebsites(likedResponse.data);
+        // Fetch Shared Websites
         const sharedResponse = await axios.get(
           `${API_BASE_URL}/users/${user.user_id}/shared-websites`,
           { headers: { 'Authorization': `Bearer ${apiKey}` } }
         );
-        setLikedWebsites(likedResponse.data);
         setSharedWebsites(sharedResponse.data);
+        // New: Fetch Created Websites
+        const createdResponse = await axios.get(
+          `${API_BASE_URL}/users/${user.user_id}/created-websites`,
+          { headers: { 'Authorization': `Bearer ${apiKey}` } }
+        );
+        setCreatedWebsites(createdResponse.data);
       } catch (err) {
         console.error('Error fetching profile websites:', err);
       }
@@ -110,6 +118,19 @@ function ProfilePage() {
           </div>
         </div>
       )}
+
+      <div className={styles.section}>
+        <h3 className={styles.sectionTitle}>Created Websites</h3>
+        {createdWebsites.length > 0 ? (
+          createdWebsites.map(website => (
+            <div key={website.website_id} className={styles.websiteContainer}>
+              <WebsiteCard website={website} />
+            </div>
+          ))
+        ) : (
+          <p>No created websites.</p>
+        )}
+      </div>
 
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Liked Websites</h3>

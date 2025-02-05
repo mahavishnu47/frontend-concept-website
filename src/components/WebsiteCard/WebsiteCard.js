@@ -103,9 +103,13 @@ function WebsiteCard({ website }) {
   return (
     <div className={styles.websiteCard}>
       <div className={styles.header}>
+        {website.concept_name ? (
+          <div className={styles.conceptName}>
+            <strong>{website.concept_name}</strong>
+          </div>
+        ) : null}
         <span>Website ID: {website.website_id}</span>
         <span>Created: {formatDate(website.created_at)}</span>
-        {/* <span>Last Accessed: {formatDate(website.lastAccessed)}</span> */}
         <Link 
           to={`/website/${website.website_id}/fullscreen`}
           className={styles.fullScreenButton}

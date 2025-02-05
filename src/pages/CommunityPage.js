@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react'; // Removed useRef
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import io from 'socket.io-client';
 import { AuthContext } from '../context/AuthContext';
 import API_BASE_URL from '../config';
 import './CommunityPage.css'; // Chat styling
@@ -11,7 +10,6 @@ function CommunityPage() {
   const { getApiKey, user } = useContext(AuthContext);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const socket = useRef(null); // NEW: declare socket ref
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -33,64 +31,37 @@ function CommunityPage() {
     };
 
     fetchMessages();
-
-    socket.current = io(`${API_BASE_URL}/community`, { 
-      path: '/socket.io',
-      reconnection: true // NEW: enable auto-reconnection
-    });
-    
-    // Listen for connection events
-    socket.current.on('disconnect', () => {
-      console.log('Disconnected from server');
-    });
-    socket.current.on('reconnect', (attemptNumber) => {
-      console.log(`Reconnected after ${attemptNumber} attempts`);
-      socket.current.emit('join', community_id); // NEW: rejoin the room on reconnection
-    });
-    
-    socket.current.emit('join', community_id);
-    socket.current.on('new_message', (message) => {
-      // Append only if message belongs to this community
-      if (message.website_id === parseInt(community_id, 10)) {
-        setMessages(prev => [message, ...prev]);
-      }
-    });
-    return () => {
-      socket.current.disconnect();
-    };
+    // Removed all socket initialization and listeners
   }, [community_id, getApiKey]); // Removed 'user' dependency
 
-  const sendMessage = (e) => {
+  const sendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
-
-    // Add locally so UI updates right away
-    setMessages(prev => [
-      {
-        post_id: Date.now(), // Temporary ID
-        user_id: user.user_id,
-        website_id: parseInt(community_id, 10),
-        content: newMessage,
-        created_at: new Date().toISOString()
-      },
-      ...prev
-    ]);
-
-    socket.current.emit('send_message', {
-      community_id,
-      user_id: user.user_id,
-      content: newMessage
-    });
-
-    setNewMessage('');
+    try {
+      const apiKey = getApiKey();
+      const response = await axios.post(
+        `${API_BASE_URL}/communities/${community_id}/messages`,
+        {
+          user_id: user.user_id,
+          content: newMessage
+        },
+        { headers: { 'Authorization': `Bearer ${apiKey}` } }
+      );
+      // Use response.data.data (the serialized message) to ensure a valid created_at field.
+      setMessages(prev => [response.data.data, ...prev]);
+      setNewMessage('');
+    } catch (err) {
+      console.error('Error sending message:', err);
+    }
   };
 
-  const renderMessage = (msg) => {
+  const renderMessage = (msg, idx) => {
     const isOwn = msg.user_id === user.user_id;
-    // Display a circle with the sender’s initial for messages not sent by the current user
-    const initial = (!isOwn && msg.user_email && msg.user_email[0].toUpperCase()) || (!isOwn ? '?' : '');
+    const initial = (!isOwn && msg.user_email && msg.user_email[0].toUpperCase()) 
+                    || (!isOwn ? '?' : '');
     return (
-      <div key={msg.post_id} className={`message ${isOwn ? 'own' : 'other'}`}>
+      // Use msg.post_id if available; otherwise, combine user_id, created_at and idx to ensure uniqueness.
+      <div key={msg.post_id || `${msg.user_id}-${msg.created_at}-${idx}`} className={`message ${isOwn ? 'own' : 'other'}`}>
         {!isOwn && (
           <div className="user-circle">
             {initial}
@@ -108,7 +79,7 @@ function CommunityPage() {
     <div className="community-chat-container">
       <h2>Community Chat: {community_id}</h2>
       <div className="messages-container">
-        {messages.map(msg => renderMessage(msg))}
+        {messages.map((msg, index) => renderMessage(msg, index))}
       </div>
       <form onSubmit={sendMessage} className="message-form">
         <input
