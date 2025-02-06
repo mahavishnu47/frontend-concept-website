@@ -2,6 +2,8 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  min-height: 100vh;
+  transition: all 0.3s ease;
 }
 
 .heroSection {
@@ -112,4 +114,58 @@
 
 .error {
   color: #dc3545;
+}
+
+.darkMode .communitiesPage {
+  background-color: var(--bg-primary-dark);
+  color: var(--text-primary-dark);
+}
+
+.darkMode .heroSection {
+  background: var(--hero-bg-dark);
+}
+
+.darkMode .heroSection {
+  background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+}
+
+.darkMode .heroTitle,
+.darkMode .heroSubtitle {
+  color: var(--text-primary-dark);
+}
+
+.darkMode .communityCard {
+  background-color: var(--bg-secondary-dark);
+  border-color: var(--border-dark);
+  color: var(--text-primary-dark);
+}
+
+.darkMode .communityName {
+  color: var(--text-primary-dark);
+}
+
+.darkMode .creatorName,
+.darkMode .memberCount {
+  color: var(--text-secondary-dark);
+}
+
+.darkMode .joinButton,
+.darkMode .leaveButton,
+.darkMode .exploreButton {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.darkMode .modalOverlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.darkMode .modalContent {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
+}
+
+.darkMode .emptyCommunities {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
 }

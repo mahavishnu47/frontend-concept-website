@@ -174,7 +174,7 @@ function WebsiteCard({ website }) {
         >
           {communityJoined ? 'Go to Community' : 'Join Community'}
         </button>
-
+        {/* "Learn More" button removed */}
       </div>
       <div className={styles.websiteContent}>
         <iframe

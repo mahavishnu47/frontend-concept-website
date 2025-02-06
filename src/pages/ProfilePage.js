@@ -7,14 +7,14 @@ import styles from './ProfilePage.module.css';
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 
-function CollapsibleItem({ title, children }) {
-  const [isOpen, setIsOpen] = useState(false);
+function CollapsibleSection({ title, children, isOpen, toggleOpen }) {
   return (
-    <div className={styles.collapsibleItem}>
-      <div className={styles.collapsibleHeader} onClick={() => setIsOpen(!isOpen)}>
-        {title} {isOpen ? '-' : '+'}
+    <div className={styles.collapsibleSection}>
+      <div className={styles.sectionHeader} onClick={toggleOpen}>
+        <h2>{title}</h2>
+        <span className={styles.toggleIcon}>{isOpen ? '−' : '+'}</span>
       </div>
-      {isOpen && <div className={styles.collapsibleContent}>{children}</div>}
+      {isOpen && <div className={styles.sectionContent}>{children}</div>}
     </div>
   );
 }
@@ -27,6 +27,11 @@ function ProfilePage() {
   const [createdWebsites, setCreatedWebsites] = useState([]); // New state
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
+  const [sectionsState, setSectionsState] = useState({
+    created: true,
+    liked: false,
+    shared: false
+  });
 
   useEffect(() => {
     async function fetchWebsites() {
@@ -79,95 +84,103 @@ function ProfilePage() {
     navigate('/');
   };
 
+  const toggleSection = (section) => {
+    setSectionsState(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   return (
-    <div className={styles.profileContainer}>
-      {/* Add this near the top of your profile content */}
-      <div className={styles.themeToggle}>
-        <label className={styles.switch}>
-          <input 
-            type="checkbox"
-            checked={isDarkMode}
-            onChange={() => setIsDarkMode(!isDarkMode)}
-          />
-          <span className={styles.slider}></span>
-        </label>
-        <span>{isDarkMode ? 'Dark Mode' : 'Light Mode'}</span>
-      </div>
-      
-      <h2>Profile</h2>
-      <div>
-        <strong>Username:</strong> {user.username} <br />
-        <strong>Email:</strong> {user.email}
+    <div className={styles.profilePage}>
+      {/* User Profile Header */}
+      <header className={styles.profileHeader}>
+        <div className={styles.headerContent}>
+          <div className={styles.userAvatar}>
+            {user.username ? user.username[0].toUpperCase() : 'U'}
+          </div>
+          <h1 className={styles.userName}>Welcome, {user.username}!</h1>
+          <p className={styles.userEmail}>{user.email}</p>
+        </div>
+        <div className={styles.headerControls}>
+          <div className={styles.themeToggle}>
+            <label className={styles.switch}>
+              <input 
+                type="checkbox"
+                checked={isDarkMode}
+                onChange={() => setIsDarkMode(!isDarkMode)}
+              />
+              <span className={styles.slider}></span>
+            </label>
+            <span>{isDarkMode ? 'Dark Mode' : 'Light Mode'}</span>
+          </div>
+          <button 
+            className={styles.logoutButton}
+            onClick={() => setShowLogoutModal(true)}
+          >
+            Log Out
+          </button>
+        </div>
+      </header>
+
+      <div className={styles.profileContent}>
+        {/* Collapsible Created Websites Section */}
+        <CollapsibleSection 
+          title={`Created Websites (${createdWebsites.length})`}
+          isOpen={sectionsState.created}
+          toggleOpen={() => toggleSection('created')}
+        >
+          <div className={styles.websitesGrid}>
+            {createdWebsites.map(website => (
+              <WebsiteCard key={website.website_id} website={website} />
+            ))}
+          </div>
+        </CollapsibleSection>
+
+        {/* Collapsible Liked Websites Section */}
+        <CollapsibleSection 
+          title={`Liked Websites (${likedWebsites.length})`}
+          isOpen={sectionsState.liked}
+          toggleOpen={() => toggleSection('liked')}
+        >
+          <div className={styles.websitesGrid}>
+            {likedWebsites.map(website => (
+              <WebsiteCard key={website.website_id} website={website} />
+            ))}
+          </div>
+        </CollapsibleSection>
+
+        {/* Collapsible Shared Websites Section */}
+        <CollapsibleSection 
+          title={`Shared Websites (${sharedWebsites.length})`}
+          isOpen={sectionsState.shared}
+          toggleOpen={() => toggleSection('shared')}
+        >
+          <div className={styles.websitesGrid}>
+            {sharedWebsites.map(website => (
+              <WebsiteCard key={website.website_id} website={website} />
+            ))}
+          </div>
+        </CollapsibleSection>
       </div>
 
-      <h1>Welcome, {user ? user.name : 'User'}</h1>
-      <button 
-        className={styles.ctaButton} 
-        onClick={() => setShowLogoutModal(true)}
-      >
-        Log Out
-      </button>
-      
+      {/* Logout Modal */}
       {showLogoutModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
+            <h2>Confirm Logout</h2>
             <p>Are you sure you want to log out?</p>
             <div className={styles.modalActions}>
-              <button 
-                className={styles.ctaButton} 
-                onClick={handleLogoutConfirm}
-              >
+              <button onClick={handleLogoutConfirm} className={styles.logoutConfirm}>
                 Log Out
               </button>
-              <button 
-                className={styles.cancelButton} 
-                onClick={() => setShowLogoutModal(false)}
-              >
+              <button onClick={() => setShowLogoutModal(false)} className={styles.cancelButton}>
                 Cancel
               </button>
             </div>
           </div>
         </div>
       )}
-
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Created Websites</h3>
-        {createdWebsites.length > 0 ? (
-          createdWebsites.map(website => (
-            <div key={website.website_id} className={styles.websiteContainer}>
-              <WebsiteCard website={website} />
-            </div>
-          ))
-        ) : (
-          <p>No created websites.</p>
-        )}
-      </div>
-
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Liked Websites</h3>
-        {likedWebsites.length > 0 ? (
-          likedWebsites.map(website => (
-            <CollapsibleItem key={website.website_id} title={`Website ID ${website.website_id}`}>
-              <WebsiteCard website={website} />
-            </CollapsibleItem>
-          ))
-        ) : (
-          <p>No liked websites.</p>
-        )}
-      </div>
-
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Shared Websites</h3>
-        {sharedWebsites.length > 0 ? (
-          sharedWebsites.map(website => (
-            <CollapsibleItem key={website.website_id} title={`Website ID ${website.website_id}`}>
-              <WebsiteCard website={website} />
-            </CollapsibleItem>
-          ))
-        ) : (
-          <p>No shared websites.</p>
-        )}
-      </div>
     </div>
   );
 }

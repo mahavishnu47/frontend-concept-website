@@ -5,6 +5,7 @@ import styles from './WebsitesPage.module.css';
 import WebsiteCard from '../components/WebsiteCard/WebsiteCard';
 import API_BASE_URL from '../config';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 function WebsitesPage() {
   const [websites, setWebsites] = useState([]);
@@ -13,6 +14,7 @@ function WebsitesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [orderCriteria, setOrderCriteria] = useState('default');
   const { getApiKey, isAuthenticated, user } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(1);
   const websitesPerPage = 10;
 
@@ -100,72 +102,92 @@ function WebsitesPage() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className={styles.websitesPage}>
-      <h2 className={styles.pageTitle}>
-        {searchTerm.trim() ? `Search results for "${searchTerm}"` : 'All Websites'}
-      </h2>
-      {/* Changed: Replaced form with a div to remove submit action */}
-      <div className={styles.searchForm}>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="Search by concept name"
-          className={styles.searchInput}
-        />
-        {/* New ordering select */}
-        <select value={orderCriteria} onChange={handleOrderChange} className={styles.orderSelect}>
-          <option value="default">Default</option>
-          <option value="mostLiked">Most Liked</option>
-          <option value="mostShared">Most Shared</option>
-          <option value="mostMembers">Most Members</option>
-          <option value="mostRecent">Most Recent</option>  // NEW: Sort by newest first
-          <option value="oldest">Oldest</option>            // NEW: Sort by oldest first
-        </select>
-      </div>
+    <div className={`${styles.websitesPage} ${isDarkMode ? 'darkMode' : ''}`}>
+      {/* New Hero Section */}
+      <section className={styles.heroSection}>
+        <h1 className={styles.heroTitle}>
+          Interactive Learning Websites
+        </h1>
+        <p className={styles.heroSubtitle}>
+          Browse through our collection of interactive educational websites created by our community
+        </p>
+      </section>
 
-      {loading ? (
-        <div className={styles.loading}>Loading websites...</div>
-      ) : error ? (
-        <div className={styles.error}>{error}</div>
-      ) : currentWebsites.length > 0 ? (
-        <>
-          <div className={styles.websitesGrid}>
-            {currentWebsites.map(website => (
-              <WebsiteCard key={website.website_id} website={website} />
-            ))}
+      <section className={styles.mainSection}>
+        {/* Controls Container */}
+        <div className={styles.controlsContainer}>
+          <div className={styles.searchContainer}>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleInputChange}
+              placeholder="Search websites..."
+              className={styles.searchInput}
+            />
+            <select 
+              value={orderCriteria} 
+              onChange={handleOrderChange} 
+              className={styles.orderSelect}
+            >
+              <option value="default">Sort by</option>
+              <option value="mostRecent">Most Recent</option>
+              <option value="oldest">Oldest First</option>
+              <option value="mostLiked">Most Liked</option>
+              <option value="mostShared">Most Shared</option>
+              <option value="mostMembers">Most Members</option>
+            </select>
           </div>
-          {/* Pagination Controls */}
-          <div className={styles.pagination}>
-            {currentPage > 1 && (
-              <button onClick={() => paginate(currentPage - 1)}>Prev</button>
-            )}
-            {/* Show next 2 page numbers */}
-            {Array.from({ length: 2 }, (_, i) => currentPage + i).map(pageNum => (
-              pageNum <= totalPages && (
-                <button 
-                  key={pageNum} 
-                  onClick={() => paginate(pageNum)}
-                  style={{ fontWeight: pageNum === currentPage ? 'bold' : 'normal' }}
-                >
-                  {pageNum}
-                </button>
-              )
-            ))}
-            {currentPage + 2 < totalPages && (
-              <>
-                <span>...</span>
-                <button onClick={() => paginate(totalPages)}>{totalPages}</button>
-              </>
-            )}
-            {currentPage < totalPages && (
-              <button onClick={() => paginate(currentPage + 1)}>Next</button>
-            )}
-          </div>
-        </>
-      ) : (
-        <div className={styles.noResults}>No websites found</div>
-      )}
+        </div>
+
+        {/* Results Section */}
+        <div className={styles.resultsSection}>
+          {loading ? (
+            <div className={styles.loading}>Loading websites...</div>
+          ) : error ? (
+            <div className={styles.error}>{error}</div>
+          ) : currentWebsites.length > 0 ? (
+            <>
+              <div className={styles.websitesGrid}>
+                {currentWebsites.map(website => (
+                  <WebsiteCard key={website.website_id} website={website} />
+                ))}
+              </div>
+              
+              <div className={styles.pagination}>
+                {currentPage > 1 && (
+                  <button onClick={() => paginate(currentPage - 1)}>Prev</button>
+                )}
+                {/* Show next 2 page numbers */}
+                {Array.from({ length: 2 }, (_, i) => currentPage + i).map(pageNum => (
+                  pageNum <= totalPages && (
+                    <button 
+                      key={pageNum} 
+                      onClick={() => paginate(pageNum)}
+                      style={{ fontWeight: pageNum === currentPage ? 'bold' : 'normal' }}
+                    >
+                      {pageNum}
+                    </button>
+                  )
+                ))}
+                {currentPage + 2 < totalPages && (
+                  <>
+                    <span>...</span>
+                    <button onClick={() => paginate(totalPages)}>{totalPages}</button>
+                  </>
+                )}
+                {currentPage < totalPages && (
+                  <button onClick={() => paginate(currentPage + 1)}>Next</button>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className={styles.noResults}>
+              <h3>No websites found</h3>
+              <p>Try adjusting your search criteria</p>
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

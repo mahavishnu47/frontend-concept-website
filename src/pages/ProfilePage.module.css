@@ -1,15 +1,248 @@
 /* src/pages/ProfilePage/ProfilePage.module.css */
 
 .profilePage {
-    padding: 60px 20px;
-    background-color: #f8f8f8; /* Light grey background */
-    min-height: 80vh;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.profileHeader {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  padding: 3rem 2rem;
+  border-radius: 15px;
+  color: white;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerContent {
+  text-align: center;
+  flex: 1;
+}
+
+.userAvatar {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1rem;
+}
+
+.userName {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.userEmail {
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+.headerControls {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.collapsibleSection {
+  background: white;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.sectionHeader {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
+
+.sectionHeader:hover {
+  background: #e9ecef;
+}
+
+.toggleIcon {
+  font-size: 1.5rem;
+  color: #007bff;
+}
+
+.sectionContent {
+  padding: 1.5rem;
+}
+
+.logoutButton {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+}
+
+.logoutButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.heroSection {
+    text-align: center;
+    padding: 3rem 1rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.heroTitle {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.heroSubtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.mainSection {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.userInfoCard {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-  }
-  
-  .profileSection {
+}
+
+.userDetails h2 {
+    margin: 0;
+    color: #333;
+}
+
+.userDetails p {
+    color: #666;
+    margin: 0.5rem 0 0;
+}
+
+.userActions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.section {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.websitesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalContent {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+}
+
+.modalActions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.modalActions button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modalActions button:first-child {
+    background: #dc3545;
+    color: white;
+}
+
+.modalActions button:last-child {
+    background: #6c757d;
+    color: white;
+}
+
+.themeToggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+/* Add responsive design */
+@media (max-width: 768px) {
+    .userInfoCard {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .websitesGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.profileSection {
     background-color: #fff;
     padding: 50px;
     border-radius: 10px;
@@ -227,4 +460,28 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(26px);
+}
+
+.darkMode .profileHeader {
+  background: var(--hero-bg-dark);
+}
+
+.darkMode .userName,
+.darkMode .userEmail {
+  color: var(--text-primary-dark);
+}
+
+.darkMode .collapsibleSection {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
+}
+
+.darkMode .sectionHeader {
+  background-color: var(--card-bg-dark);
+  color: var(--text-primary-dark);
+}
+
+.darkMode .modalContent {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
 }

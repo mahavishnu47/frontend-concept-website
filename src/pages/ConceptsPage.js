@@ -125,92 +125,114 @@ function ConceptsPage() {
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    if (loading) {
-        return <div className={styles.loading}>Loading concepts...</div>;
-    }
-
-    if (error) {
-        return <div className={styles.error}>{error}</div>;
-    }
-
     return (
         <div className={styles.conceptsPage}>
-            <section className={styles.conceptsSection}>
-                <h2 className={styles.conceptsTitle}>Explore Concepts</h2>
-                {/* NEW: Search input field */}
-                <div className={styles.searchContainer}>
-                    <input
-                        type="text"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        placeholder="Search by concept name"
-                        className={styles.searchInput}
-                    />
+            {/* Hero Section styled like WebsitesPage */}
+            <section className={styles.heroSection}>
+                <h1 className={styles.heroTitle}>
+                    Educational Concepts Library
+                </h1>
+                <p className={styles.heroSubtitle}>
+                    Explore our comprehensive collection of educational concepts across different subjects and boards
+                </p>
+            </section>
+
+            <section className={styles.mainSection}>
+                {/* Controls Container styled like WebsitesPage */}
+                <div className={styles.controlsContainer}>
+                    <div className={styles.searchContainer}>
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            placeholder="Search concepts..."
+                            className={styles.searchInput}
+                        />
+                        {/* Filters aligned horizontally like WebsitesPage */}
+                        {!filterLoading && (
+                            <div className={styles.filterGroup}>
+                                <select 
+                                    className={styles.filterSelect} 
+                                    value={gradeFilter} 
+                                    onChange={(e) => handleFilterChange('grade', e.target.value)}
+                                >
+                                    <option value="">All Grades</option>
+                                    {grades.map(grade => (
+                                        <option key={grade} value={grade}>{grade}</option>
+                                    ))}
+                                </select>
+
+                                <select 
+                                    className={styles.filterSelect} 
+                                    value={boardFilter} 
+                                    onChange={(e) => handleFilterChange('board', e.target.value)}
+                                >
+                                    <option value="">All Boards</option>
+                                    {boards.map(board => (
+                                        <option key={board} value={board}>{board}</option>
+                                    ))}
+                                </select>
+
+                                <select 
+                                    className={styles.filterSelect} 
+                                    value={subjectFilter} 
+                                    onChange={(e) => handleFilterChange('subject', e.target.value)}
+                                >
+                                    <option value="">All Subjects</option>
+                                    {subjects.map(subject => (
+                                        <option key={subject} value={subject}>{subject}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
+                    </div>
                 </div>
-                <div className={styles.filters}>
-                    {filterLoading ? (
-                        <div>Loading filters...</div>
-                    ) : (
+
+                {/* Results Section */}
+                <div className={styles.resultsSection}>
+                    {loading ? (
+                        <div className={styles.loading}>Loading concepts...</div>
+                    ) : error ? (
+                        <div className={styles.error}>{error}</div>
+                    ) : currentConcepts.length > 0 ? (
                         <>
-                            <select 
-                                className={styles.filterSelect} 
-                                value={gradeFilter} 
-                                onChange={(e) => handleFilterChange('grade', e.target.value)}
-                            >
-                                <option value="">All Grades</option>
-                                {grades.map(grade => (
-                                    <option key={grade} value={grade}>{grade}</option>
+                            <div className={styles.conceptsGrid}>
+                                {currentConcepts.map(concept => (
+                                    <ConceptCard key={concept.concept_id} concept={concept} />
                                 ))}
-                            </select>
-
-                            <select 
-                                className={styles.filterSelect} 
-                                value={boardFilter} 
-                                onChange={(e) => handleFilterChange('board', e.target.value)}
-                            >
-                                <option value="">All Boards</option>
-                                {boards.map(board => (
-                                    <option key={board} value={board}>{board}</option>
+                            </div>
+                            
+                            <div className={styles.pagination}>
+                                {currentPage > 1 && (
+                                    <button onClick={() => paginate(currentPage - 1)}>Prev</button>
+                                )}
+                                {Array.from({ length: 2 }, (_, i) => currentPage + i).map(pageNum => (
+                                    pageNum <= totalPages && (
+                                        <button
+                                            key={pageNum}
+                                            onClick={() => paginate(pageNum)}
+                                            style={{ fontWeight: pageNum === currentPage ? 'bold' : 'normal' }}
+                                        >
+                                            {pageNum}
+                                        </button>
+                                    )
                                 ))}
-                            </select>
-
-                            <select 
-                                className={styles.filterSelect} 
-                                value={subjectFilter} 
-                                onChange={(e) => handleFilterChange('subject', e.target.value)}
-                            >
-                                <option value="">All Subjects</option>
-                                {subjects.map(subject => (
-                                    <option key={subject} value={subject}>{subject}</option>
-                                ))}
-                            </select>
+                                {currentPage + 2 < totalPages && (
+                                    <>
+                                        <span>...</span>
+                                        <button onClick={() => paginate(totalPages)}>{totalPages}</button>
+                                    </>
+                                )}
+                                {currentPage < totalPages && (
+                                    <button onClick={() => paginate(currentPage + 1)}>Next</button>
+                                )}
+                            </div>
                         </>
-                    )}
-                </div>
-
-                <div className={styles.conceptsGrid}>
-                    {currentConcepts.map(concept => (
-                        <ConceptCard key={concept.concept_id} concept={concept} />
-                    ))}
-                </div>
-                {/* NEW: Pagination Controls */}
-                <div className={styles.pagination}>
-                    {currentPage > 1 && (
-                        <button onClick={() => paginate(currentPage - 1)}>Prev</button>
-                    )}
-                    {Array.from({ length: totalPages }, (_, index) => index + 1).map(pageNumber => (
-                        pageNumber <= totalPages && (
-                            <button
-                                key={pageNumber}
-                                onClick={() => paginate(pageNumber)}
-                                style={{ fontWeight: pageNumber === currentPage ? 'bold' : 'normal' }}
-                            >
-                                {pageNumber}
-                            </button>
-                        )
-                    ))}
-                    {currentPage < totalPages && (
-                        <button onClick={() => paginate(currentPage + 1)}>Next</button>
+                    ) : (
+                        <div className={styles.noResults}>
+                            <h3>No concepts found</h3>
+                            <p>Try adjusting your search criteria</p>
+                        </div>
                     )}
                 </div>
             </section>

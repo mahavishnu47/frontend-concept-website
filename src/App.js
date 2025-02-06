@@ -19,69 +19,72 @@ import AdminConceptUploadPage from './pages/AdminConceptUploadPage';
 import { ThemeProvider } from './context/ThemeContext';
 import './styles/theme.css';  // Import global theme styles
 import ThemeWrapper from './components/ThemeWrapper';
+import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
 
 function App() {
   return (
     <ThemeProvider>
-      <ThemeWrapper>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+      <AuthProvider>
+        <ThemeWrapper>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-          {/* Protected Routes - only accessible when authenticated */}
-          <Route path="/concepts" element={
-            <ProtectedRoute>
-              <ConceptsPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/profile" element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          } />
-          <Route path="/websites" element={
-            <ProtectedRoute>
-              <WebsitesPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/website/:website_id/fullscreen" element={
-            <ProtectedRoute>
-              <FullScreenWebsite />
-            </ProtectedRoute>
-          } />
-          <Route path="/communities/:community_id" element={
-            <ProtectedRoute>
-              <CommunityPage />
-            </ProtectedRoute>
-          } />
-          {/* Optionally a list view */}
-          <Route path="/communities" element={
-            <ProtectedRoute>
-              <CommunitiesPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/communities/:community_id" element={
-            <ProtectedRoute>
-              <CommunityChatPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/create-explanation" element={
-            <ProtectedRoute>
-              <ExplanationCreatePage />
-            </ProtectedRoute>
-          } />
-          <Route 
-            path="/admin/upload-concept" 
-            element={
-              <ProtectedAdminRoute>
-                <AdminConceptUploadPage />
-              </ProtectedAdminRoute>
-            } 
-          />
-        </Routes>
-      </ThemeWrapper>
+            {/* Protected Routes - only accessible when authenticated */}
+            <Route path="/concepts" element={
+              <ProtectedRoute>
+                <ConceptsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/websites" element={
+              <ProtectedRoute>
+                <WebsitesPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/website/:website_id/fullscreen" element={
+              <ProtectedRoute>
+                <FullScreenWebsite />
+              </ProtectedRoute>
+            } />
+            <Route path="/communities/:community_id" element={
+              <ProtectedRoute>
+                <CommunityPage />
+              </ProtectedRoute>
+            } />
+            {/* Optionally a list view */}
+            <Route path="/communities" element={
+              <ProtectedRoute>
+                <CommunitiesPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/communities/:community_id" element={
+              <ProtectedRoute>
+                <CommunityChatPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/create-explanation" element={
+              <ProtectedRoute>
+                <ExplanationCreatePage />
+              </ProtectedRoute>
+            } />
+            <Route 
+              path="/admin/upload-concept" 
+              element={
+                <ProtectedAdminRoute>
+                  <AdminConceptUploadPage />
+                </ProtectedAdminRoute>
+              } 
+            />
+          </Routes>
+        </ThemeWrapper>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

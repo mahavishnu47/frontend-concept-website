@@ -4,9 +4,11 @@ import { AuthContext } from '../context/AuthContext';
 import API_BASE_URL from '../config';
 import { Link } from 'react-router-dom';
 import styles from './CommunitiesPage.module.css';
+import { ThemeContext } from '../context/ThemeContext';
 
 function CommunitiesPage() {
   const { user, getApiKey } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [communities, setCommunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -67,7 +69,7 @@ function CommunitiesPage() {
   }
 
   return (
-    <div className={styles.communitiesPage}>
+    <div className={`${styles.communitiesPage} ${isDarkMode ? 'darkMode' : ''}`}>
       <section className={styles.heroSection}>
         <h1 className={styles.heroTitle}>Your Learning Communities</h1>
         <p className={styles.heroSubtitle}>Connect, collaborate, and learn together with fellow students</p>

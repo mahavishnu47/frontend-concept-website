@@ -96,3 +96,27 @@
 .actionButton:hover {
     background-color: var(--secondary-color);
 }
+
+.darkMode .websiteCard {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
+}
+
+.darkMode .conceptName {
+  color: var(--text-primary-dark);
+}
+
+.darkMode .stats,
+.darkMode .actions {
+  color: var(--text-secondary-dark);
+}
+
+.darkMode .modalContent {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
+}
+
+.darkMode .websiteFrame {
+  background-color: var(--bg-secondary-dark);
+  border-color: var(--border-dark);
+}

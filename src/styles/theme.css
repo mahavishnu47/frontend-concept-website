@@ -13,6 +13,29 @@
   --hover-bg: #F5F8FA;
   --success-color: #2ECC71;
   --error-color: #E74C3C;
+
+  /* Light Mode */
+  --bg-primary-light: #f8f9fa;
+  --bg-secondary-light: #ffffff;
+  --text-primary-light: #2c3e50;
+  --text-secondary-light: #6c757d;
+  --border-light: #dee2e6;
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --accent-color: #007bff;
+  --accent-hover: #0056b3;
+
+  /* Dark Mode */
+  --bg-primary-dark: #121212;
+  --bg-secondary-dark: #1e1e1e;
+  --text-primary-dark: #ffffff;
+  --text-secondary-dark: #b0b0b0;
+  --hero-bg-dark: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  --card-bg-dark: #2d2d2d;
+  --border-dark: #404040;
+
+  /* Shared Font Settings */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-secondary: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 [data-theme='dark'] {
@@ -29,6 +52,31 @@
   --hover-bg: #353535;
   --success-color: #2ECC71;
   --error-color: #E74C3C;
+}
+
+/* Dark Mode Classes */
+.darkMode {
+  background-color: var(--bg-primary-dark);
+  color: var(--text-primary-dark);
+}
+
+.darkMode .heroSection {
+  background: var(--hero-bg-dark);
+  color: var(--text-primary-dark);
+}
+
+.darkMode .card,
+.darkMode .section {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
+  border-color: var(--border-dark);
+}
+
+.darkMode input,
+.darkMode select {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
+  border-color: var(--border-dark);
 }
 
 /* Global styles */

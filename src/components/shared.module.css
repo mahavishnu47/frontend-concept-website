@@ -1,0 +1,22 @@
+.heroSection {
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+  color: white;
+  font-family: var(--font-primary);
+}
+
+.searchInput,
+.filterSelect {
+  font-family: var(--font-primary);
+  background-color: var(--bg-secondary-light);
+  color: var(--text-primary-light);
+  border: 1px solid var(--border-light);
+}
+
+.darkMode .searchInput,
+.darkMode .filterSelect {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
+  border-color: var(--border-dark);
+}
+
+/* Add more shared styles... */
