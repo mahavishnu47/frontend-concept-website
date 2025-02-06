@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './WebsiteCard.module.css';
@@ -15,11 +15,31 @@ function WebsiteCard({ website }) {
   // Initialize communityJoined to false instead of website.community_id
   const [communityJoined, setCommunityJoined] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [shareModalVisible, setShareModalVisible] = useState(false);
 
   console.log('WebsiteCard component rendered with website:', website);
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString();
   };
+
+  // NEW: Check if user has already joined this website's community on mount
+  useEffect(() => {
+    async function checkCommunityMembership() {
+      if (user) {
+        try {
+          const apiKey = getApiKey();
+          const response = await axios.get(`${API_BASE_URL}/users/${user.user_id}/communities`, {
+            headers: { 'Authorization': `Bearer ${apiKey}` }
+          });
+          const joined = response.data.some(community => community.website_id === website.website_id);
+          setCommunityJoined(joined);
+        } catch (err) {
+          console.error("Error checking community membership:", err);
+        }
+      }
+    }
+    checkCommunityMembership();
+  }, [user, website.website_id, getApiKey]);
 
   const handleLikeToggle = async () => {
     const apiKey = getApiKey();
@@ -55,21 +75,31 @@ function WebsiteCard({ website }) {
     }
   };
 
-  const handleShare = async () => {
+  // NEW: Construct the share URL for fullscreen view
+  const shareUrl = window.location.origin + `/website/${website.website_id}/fullscreen`;
+
+  // Modify handleShare: show the share modal instead of immediate share update
+  const handleShare = () => {
+    setShareModalVisible(true);
+  };
+
+  // NEW: Function to copy the share URL and update share count
+  const handleCopyShareUrl = async () => {
     try {
+      await navigator.clipboard.writeText(shareUrl);
+      // After copying, update the share count via API
       const apiKey = getApiKey();
       const response = await axios.post(
         `${API_BASE_URL}/websites/${website.website_id}/share`,
         { user_id: user.user_id },
         { headers: { 'Authorization': `Bearer ${apiKey}` } }
       );
-      // Only update shareCount if share is newly added.
-      if (response.data.message.indexOf('updated') !== -1) {
+      if (response.data.message.indexOf("updated") !== -1) {
         setShareCount(shareCount + 1);
       }
-      // Optionally add feedback for already shared.
+      setShareModalVisible(false);
     } catch (err) {
-      console.error('Error sharing website:', err);
+      console.error('Error updating share count or copying URL:', err);
     }
   };
 
@@ -96,7 +126,9 @@ function WebsiteCard({ website }) {
     if (!communityJoined) {
       setShowJoinModal(true);
     } else {
-      navigate('/communities'); // already joined: redirect to communities
+      // Navigate to the specific community page
+      const communityId = website.community_id || website.website_id;
+      navigate(`/communities/${communityId}`);
     }
   };
 
@@ -108,8 +140,8 @@ function WebsiteCard({ website }) {
             <strong>{website.concept_name}</strong>
           </div>
         ) : null}
-        <span>Website ID: {website.website_id}</span>
-        <span>Created: {formatDate(website.created_at)}</span>
+        {/* <span>Website ID: {website.website_id}</span> */}
+        
         <Link 
           to={`/website/${website.website_id}/fullscreen`}
           className={styles.fullScreenButton}
@@ -120,7 +152,9 @@ function WebsiteCard({ website }) {
       <div className={styles.stats}>
         <span>👍 {likeCount}</span>
         <span>🔄 {shareCount}</span>
+        <span>Members: {website.member_count || 0}</span>
       </div>
+      {/* NEW: Display number of community members */}
       <div className={styles.actions}>
         <button 
           onClick={handleLikeToggle} 
@@ -138,8 +172,9 @@ function WebsiteCard({ website }) {
           onClick={joinCommunity} 
           className={styles.actionButton}
         >
-          {communityJoined ? 'Enter Community' : 'Join Community'}
+          {communityJoined ? 'Go to Community' : 'Join Community'}
         </button>
+
       </div>
       <div className={styles.websiteContent}>
         <iframe
@@ -150,6 +185,9 @@ function WebsiteCard({ website }) {
           sandbox="allow-scripts allow-same-origin allow-popups"
         />
       </div>
+      <div>
+      <span>Created: {formatDate(website.created_at)}</span>
+      </div>
 
       {showJoinModal && (
         <div className={styles.modalOverlay}>
@@ -157,6 +195,17 @@ function WebsiteCard({ website }) {
             <p>Do you want to join this community?</p>
             <button onClick={joinCommunityConfirmed}>Join</button>
             <button onClick={() => setShowJoinModal(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {shareModalVisible && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <p>Share this URL with others:</p>
+            <p>{shareUrl}</p>
+            <button onClick={handleCopyShareUrl}>Copy & Share</button>
+            <button onClick={() => setShareModalVisible(false)}>Cancel</button>
           </div>
         </div>
       )}

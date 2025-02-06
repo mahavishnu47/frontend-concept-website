@@ -9,6 +9,7 @@ function ConceptsPage() {
     const [concepts, setConcepts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState(''); // NEW: search state
     const [gradeFilter, setGradeFilter] = useState('');
     const [boardFilter, setBoardFilter] = useState('');
     const [subjectFilter, setsubjectFilter] = useState('');
@@ -19,6 +20,10 @@ function ConceptsPage() {
     const [boards, setBoards] = useState([]);
     const [subjects, setSubjects] = useState([]);
     const [filterLoading, setFilterLoading] = useState(true);
+
+    // NEW: Pagination states
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     useEffect(() => {
         const fetchConcepts = async () => {
@@ -98,8 +103,27 @@ function ConceptsPage() {
             default:
                 break;
         }
+        setCurrentPage(1);
     };
 
+    // NEW: Update search term on input change and reset pagination
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+        setCurrentPage(1);
+    };
+
+    // Combine search and filters: filter locally by concept name
+    const filteredConcepts = concepts.filter(concept =>
+        (!searchTerm || concept.conceptName.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+    // Pagination calculation
+    const totalPages = Math.ceil(filteredConcepts.length / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentConcepts = filteredConcepts.slice(indexOfFirstItem, indexOfLastItem);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     if (loading) {
         return <div className={styles.loading}>Loading concepts...</div>;
@@ -113,7 +137,16 @@ function ConceptsPage() {
         <div className={styles.conceptsPage}>
             <section className={styles.conceptsSection}>
                 <h2 className={styles.conceptsTitle}>Explore Concepts</h2>
-
+                {/* NEW: Search input field */}
+                <div className={styles.searchContainer}>
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        placeholder="Search by concept name"
+                        className={styles.searchInput}
+                    />
+                </div>
                 <div className={styles.filters}>
                     {filterLoading ? (
                         <div>Loading filters...</div>
@@ -156,9 +189,29 @@ function ConceptsPage() {
                 </div>
 
                 <div className={styles.conceptsGrid}>
-                    {concepts.map(concept => (
+                    {currentConcepts.map(concept => (
                         <ConceptCard key={concept.concept_id} concept={concept} />
                     ))}
+                </div>
+                {/* NEW: Pagination Controls */}
+                <div className={styles.pagination}>
+                    {currentPage > 1 && (
+                        <button onClick={() => paginate(currentPage - 1)}>Prev</button>
+                    )}
+                    {Array.from({ length: totalPages }, (_, index) => index + 1).map(pageNumber => (
+                        pageNumber <= totalPages && (
+                            <button
+                                key={pageNumber}
+                                onClick={() => paginate(pageNumber)}
+                                style={{ fontWeight: pageNumber === currentPage ? 'bold' : 'normal' }}
+                            >
+                                {pageNumber}
+                            </button>
+                        )
+                    ))}
+                    {currentPage < totalPages && (
+                        <button onClick={() => paginate(currentPage + 1)}>Next</button>
+                    )}
                 </div>
             </section>
         </div>

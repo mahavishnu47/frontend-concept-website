@@ -24,7 +24,9 @@ function ExplanationCreatePage() {
         { user_id: user.user_id, query: inputValue },
         { headers: { Authorization: `Bearer ${apiKey}` } }
       );
-      setCreatedWebsite(response.data);
+      // Updated: Extract website details from response.data.data
+      setCreatedWebsite(response.data.data);
+      console.log('Created website:', response.data.data); // Add this debug log
       setInputValue('');
     } catch (err) {
       console.error('Error creating website:', err);

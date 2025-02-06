@@ -59,6 +59,17 @@ function ProfilePage() {
     }
   }, [user, getApiKey]);
 
+  // New: Update the body style based on dark mode
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.style.backgroundColor = "#333"; // Dark background
+      document.body.style.color = "#FFF";            // Light text
+    } else {
+      document.body.style.backgroundColor = "#FFF";  // Light background
+      document.body.style.color = "#000";            // Dark text
+    }
+  }, [isDarkMode]);
+
   const handleLogoutConfirm = () => {
     // Remove only the authentication token, for example 'apiKey'
     localStorage.removeItem('apiKey');
