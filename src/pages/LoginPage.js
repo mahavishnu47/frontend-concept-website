@@ -1,13 +1,21 @@
-import React, { useState, useContext } from 'react'; // Import useContext Hook
+import React, { useState, useContext, useEffect } from 'react'; // Import useContext and useEffect Hook
 import styles from './LoginPage.module.css';
-import { Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext'; // Import AuthContext <---- IMPORT HERE
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
-function LoginPage() {
+function LoginPage({ user, loginFunction }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login, loading } = useContext(AuthContext); // Use useContext to access login and loading from AuthContext <---- USE CONTEXT HERE
+  const { login, loading } = useContext(AuthContext); // Use useContext to access login and loading from AuthContext
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // If the logged-in user is admin, redirect automatically to the admin page.
+    if (user && user.is_admin === 1) {
+      navigate('/admin');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -23,6 +31,10 @@ function LoginPage() {
 
     if (!success) {
       setError(loginError || 'Login failed.'); // Set error from context or generic message
+    } else {
+      // Debug: Check the stored API key after login
+      const storedToken = localStorage.getItem("authToken");
+      console.log("DEBUG: Stored authToken after login:", storedToken);
     }
     // On successful login, AuthContext's login function will handle redirection
   };

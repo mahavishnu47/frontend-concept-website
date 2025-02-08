@@ -30,11 +30,14 @@ function RegisterPage() {
     const registrationData = { username, email, password }; // Prepare registration data
     const { success, error: registrationError } = await register(registrationData); // Call register function from AuthContext
 
-     if (!success) {
+    if (!success) {
       setError(registrationError || 'Registration failed.'); // Set error from context or generic message
     } else {
+      // Debug: Check the stored API key after registration (if your AuthContext stores it)
+      const storedToken = localStorage.getItem("authToken");
+      console.log("DEBUG: Stored authToken after registration:", storedToken);
       setSuccessMessage('Registration successful! You can now login.'); // Success message managed here if needed
-       // Optionally clear the form on successful registration
+      // Optionally clear the form on successful registration
       setUsername('');
       setEmail('');
       setPassword('');

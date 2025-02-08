@@ -37,6 +37,25 @@ function CommunityPage() {
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
+
+    try {
+      // Call the moderation endpoint before sending message
+      const moderationRes = await fetch(`${API_BASE_URL}/communities/${community_id}/moderate-chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: newMessage })
+      });
+      const moderationResult = await moderationRes.json();
+      if (!moderationResult.safe) {
+        alert("Your message must focus on educational topics related to this community.");
+        return;
+      }
+    } catch (error) {
+      console.error("Moderation error:", error);
+      alert("Message moderation failed. Please try again.");
+      return;
+    }
+
     try {
       const apiKey = getApiKey();
       const response = await axios.post(

@@ -31,7 +31,6 @@ function WebsitesPage() {
         headers: { 'Authorization': `Bearer ${apiKey}` },
         params
       });
-      // NEW: Update each website with the current member_count from its community
       const updatedWebsites = await Promise.all(response.data.map(async website => {
         try {
           const commResponse = await axios.get(`${API_BASE_URL}/communities/${website.website_id}`, {
