@@ -22,7 +22,7 @@ function Navbar() {
               <Link to="/websites" className={styles.navLink}>Websites</Link>
             </li>
             <li>
-              <Link to="/communities" className={styles.navLink}>Communities</Link> {/* New link */}
+              <Link to="/communities" className={styles.navLink}>My Communities</Link> {/* Updated text */}
             </li>
             <li>
               <Link to="/create-explanation" className={styles.navLink}>Create Explanation</Link>

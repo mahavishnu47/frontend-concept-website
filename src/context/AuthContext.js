@@ -4,14 +4,32 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API_BASE_URL from '../config';
 
+// Helper function to get the stored token if it hasn't expired
+const getStoredToken = () => {
+  const tokenData = localStorage.getItem('authToken');
+  if (tokenData) {
+    try {
+      const { token, expiry } = JSON.parse(tokenData);
+      if (Date.now() < expiry) {
+        return token;
+      } else {
+        localStorage.removeItem('authToken');
+      }
+    } catch (err) {
+      console.error('Error parsing authToken from storage', err);
+      localStorage.removeItem('authToken');
+    }
+  }
+  return null;
+};
+
 // Create the AuthContext
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
-  // Initialize from localStorage using "authToken" and "user"
-  const [apiKey, setApiKey] = useState(localStorage.getItem('authToken') || null);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('authToken'));
+  const [apiKey, setApiKey] = useState(getStoredToken()); // Initialize from localStorage with expiry check
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null); // Initialize from localStorage
+  const [isAuthenticated, setIsAuthenticated] = useState(!!getStoredToken()); // Determine auth state based on apiKey presence
   const [loading, setLoading] = useState(true); // Initial loading state
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -22,6 +40,11 @@ function AuthProvider({ children }) {
     setLoading(false);
   }, []); // Run only once on component mount
 
+  // Store token with 2-day expiry in localStorage
+  const storeToken = (token) => {
+    const expiry = Date.now() + 172800000; // 2 days in ms
+    localStorage.setItem('authToken', JSON.stringify({ token, expiry }));
+  };
 
   const register = async (registrationData) => {
     setLoading(true);
@@ -30,7 +53,7 @@ function AuthProvider({ children }) {
       const response = await axios.post(`${API_BASE_URL}/auth/register`, registrationData);
       const { api_key, user: newUser } = response.data;
 
-      localStorage.setItem('authToken', api_key); // Use consistent key "authToken"
+      storeToken(api_key);
       localStorage.setItem('user', JSON.stringify(newUser));
       setApiKey(api_key);
       setUser(newUser);
@@ -49,7 +72,6 @@ function AuthProvider({ children }) {
     }
   };
 
-
   const login = async (loginData) => {
     setLoading(true);
     setError(null);
@@ -58,8 +80,8 @@ function AuthProvider({ children }) {
       const { api_key, user: loggedInUser } = response.data;
 
       if (api_key) {
-        localStorage.setItem('authToken', api_key); // Store token under "authToken"
-        localStorage.setItem('user', JSON.stringify(loggedInUser));
+        storeToken(api_key); // Store the API key with expiry for later use
+        localStorage.setItem('user', JSON.stringify(loggedInUser)); // Optionally update user state
         setUser(loggedInUser);
         setApiKey(api_key);
         setIsAuthenticated(true);
@@ -86,7 +108,10 @@ function AuthProvider({ children }) {
     navigate('/'); // Redirect to landing page after logout
   };
 
-  const getApiKey = () => localStorage.getItem('authToken'); // Helper function to get API key
+  // Updated helper to get API key from stored token
+  const getApiKey = () => {
+    return getStoredToken();
+  };
 
   const contextValue = {
     apiKey,

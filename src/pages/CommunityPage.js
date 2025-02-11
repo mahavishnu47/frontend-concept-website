@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react'; // Removed useRef
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import API_BASE_URL from '../config';
-import './CommunityPage.css'; // Chat styling
+import './CommunityPage.css';
 
 function CommunityPage() {
   const { community_id } = useParams();
@@ -15,12 +15,11 @@ function CommunityPage() {
     const fetchMessages = async () => {
       try {
         const apiKey = getApiKey();
-        if (!community_id || !apiKey) return;  // remove user check
+        if (!community_id || !apiKey) return;
         const response = await axios.get(
           `${API_BASE_URL}/communities/${community_id}/messages`,
           { headers: { 'Authorization': `Bearer ${apiKey}` } }
         );
-        // Sort messages in descending order by created_at
         const sortedMessages = response.data.sort((a, b) => 
           new Date(b.created_at) - new Date(a.created_at)
         );
@@ -31,15 +30,13 @@ function CommunityPage() {
     };
 
     fetchMessages();
-    // Removed all socket initialization and listeners
-  }, [community_id, getApiKey]); // Removed 'user' dependency
+  }, [community_id, getApiKey]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
     try {
-      // Call the moderation endpoint before sending message
       const moderationRes = await fetch(`${API_BASE_URL}/communities/${community_id}/moderate-chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -66,7 +63,6 @@ function CommunityPage() {
         },
         { headers: { 'Authorization': `Bearer ${apiKey}` } }
       );
-      // Use response.data.data (the serialized message) to ensure a valid created_at field.
       setMessages(prev => [response.data.data, ...prev]);
       setNewMessage('');
     } catch (err) {
@@ -79,7 +75,6 @@ function CommunityPage() {
     const initial = (!isOwn && msg.user_email && msg.user_email[0].toUpperCase()) 
                     || (!isOwn ? '?' : '');
     return (
-      // Use msg.post_id if available; otherwise, combine user_id, created_at and idx to ensure uniqueness.
       <div key={msg.post_id || `${msg.user_id}-${msg.created_at}-${idx}`} className={`message ${isOwn ? 'own' : 'other'}`}>
         {!isOwn && (
           <div className="user-circle">

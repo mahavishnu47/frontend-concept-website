@@ -11,3 +11,57 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Global Scrollbar Styles */
+:root {
+  --scrollbar-width: 8px;
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #888;
+  --scrollbar-thumb-hover: #555;
+  
+  /* Dark theme variables */
+  --dark-scrollbar-track: #334155;
+  --dark-scrollbar-thumb: #64748b;
+  --dark-scrollbar-thumb-hover: #94a3b8;
+}
+
+/* Webkit scrollbar styles */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Dark mode scrollbar */
+.darkMode ::-webkit-scrollbar-track {
+  background: var(--dark-scrollbar-track);
+}
+
+.darkMode ::-webkit-scrollbar-thumb {
+  background: var(--dark-scrollbar-thumb);
+}
+
+.darkMode ::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-scrollbar-thumb-hover);
+}
+
+/* Firefox scrollbar styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.darkMode * {
+  scrollbar-color: var(--dark-scrollbar-thumb) var(--dark-scrollbar-track);
+}

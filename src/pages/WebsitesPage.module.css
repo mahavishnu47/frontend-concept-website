@@ -81,17 +81,85 @@
 }
 
 .controlsContainer {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
+  background: var(--bg-secondary, white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color, #e5e7eb);
 }
 
 .searchContainer {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.searchInput,
+.orderSelect,
+.pageSizeContainer select {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--input-bg, white);
+  color: var(--text-primary, #1f2937);
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.searchInput {
+  flex: 2;
+  min-width: 200px;
+}
+
+.orderSelect {
+  flex: 1;
+  min-width: 150px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,...");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1em;
+  padding-right: 2.5rem;
+}
+
+.pageSizeContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.pageSizeContainer select {
+  padding: 0.5rem;
+  min-width: 100px;
+}
+
+.searchInput:focus,
+.orderSelect:focus,
+.pageSizeContainer select:focus {
+  outline: none;
+  border-color: var(--primary-color, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Dark mode support */
+:global(.darkMode) .searchInput,
+:global(.darkMode) .orderSelect,
+:global(.darkMode) .pageSizeContainer select {
+  background: var(--bg-secondary-dark, #1f2937);
+  border-color: var(--border-color-dark, #374151);
+  color: var(--text-primary-dark, #f3f4f6);
+}
+
+:global(.darkMode) .controlsContainer {
+  background: var(--bg-secondary-dark, #1f2937);
+  border-color: var(--border-color-dark, #374151);
+}
+
+:global(.darkMode) .pageSizeContainer {
+  color: var(--text-secondary-dark, #9ca3af);
 }
 
 .searchInput {

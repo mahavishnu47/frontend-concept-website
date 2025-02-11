@@ -120,3 +120,242 @@
   background-color: var(--bg-secondary-dark);
   border-color: var(--border-dark);
 }
+
+.titleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.creator {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.mainContent {
+  padding: 1rem;
+}
+
+.statsContainer {
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.iconButton:hover {
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+}
+
+.iconButton.active {
+  color: var(--primary-color);
+}
+
+.icon {
+  font-size: 1.25rem;
+}
+
+.count {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.metadata {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.urlBox {
+  background: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  word-break: break-all;
+  font-family: monospace;
+  border: 1px solid var(--border-color);
+}
+
+.modalActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.primaryButton {
+  background: var(--primary-color);
+  color: white;
+}
+
+.secondaryButton {
+  background: var(--bg-accent);
+  color: var(--text-primary);
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: var(--bg-secondary, white);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: modalAppear 0.3s ease;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.closeModalButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.closeModalButton:hover {
+  color: var(--text-primary);
+}
+
+.primaryButton {
+  position: relative;
+  overflow: hidden;
+}
+
+.primaryButton.success {
+  background: var(--success-color, #10B981);
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.cardMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.websiteTitle {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.creatorInfo {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 2rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.actionButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.actionButton:hover {
+  transform: translateY(-2px);
+  color: var(--primary-color);
+}
+
+.actionButton.active {
+  color: var(--primary-color);
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.buttonLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.metadata {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}

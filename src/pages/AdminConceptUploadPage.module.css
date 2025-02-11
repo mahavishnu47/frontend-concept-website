@@ -1,0 +1,283 @@
+.adminPage {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+  min-height: 100vh;
+  background-color: var(--bg-primary, #f8f9fa);
+}
+
+.heroSection {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  padding: 2rem;
+  border-radius: 16px;
+  color: white;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.heroContent {
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.heroSubtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.uploadSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 800px;
+  background: var(--bg-secondary, white);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.uploadForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.fileInputContainer {
+  margin-bottom: 1.5rem;
+}
+
+.fileInputLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  border: 2px dashed var(--primary-color, #2563eb);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: rgba(37, 99, 235, 0.05);
+}
+
+.fileInputLabel:hover {
+  background: var(--bg-accent, #f8f9fa);
+  background-color: rgba(37, 99, 235, 0.1);
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileHint {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.inputGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inputLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary, #1f2937);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.asterisk {
+  color: var(--error-color, #dc2626);
+  font-weight: bold;
+}
+
+.formInput {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.formInput:required {
+  border-left: 3px solid var(--primary-color, #2563eb);
+}
+
+.formInput:invalid:not(:placeholder-shown) {
+  border-color: var(--error-color, #dc2626);
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--primary-color, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.requiredField {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+}
+
+.submitButton {
+  background: var(--primary-color, #2563eb);
+  color: white;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submitButton:hover {
+  background: var(--primary-hover, #1d4ed8);
+  transform: translateY(-1px);
+}
+
+.statusSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.statusCard,
+.progressCard {
+  background: var(--bg-secondary, white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.statusText {
+  color: var(--text-primary, #1f2937);
+  font-size: 1.1rem;
+  margin: 1rem 0;
+}
+
+.estimatedTime {
+  color: var(--text-secondary, #4b5563);
+  font-size: 0.9rem;
+}
+
+.progressList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.progressItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  color: var(--text-primary, #1f2937);
+}
+
+.checkmark {
+  color: var(--success-color, #10b981);
+  font-weight: bold;
+}
+
+.uploadIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.selectedFileContainer {
+  width: 100%;
+  padding: 1.5rem;
+  background-color: rgba(37, 99, 235, 0.05);
+  border: 2px dashed var(--primary-color, #2563eb);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.pdfPreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.pdfIcon {
+  font-size: 1.5rem;
+}
+
+.fileName {
+  font-size: 0.9rem;
+  color: var(--text-primary, #1f2937);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.removeFileBtn {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--error-color, #dc2626);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.removeFileBtn:hover {
+  background-color: var(--error-hover-color, #b91c1c);
+  transform: scale(1.1);
+}
+
+.fileSize {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+@media (min-width: 768px) {
+  .adminPage {
+    padding: 2rem;
+  }
+
+  .uploadSection {
+    grid-template-columns: unset;
+  }
+}

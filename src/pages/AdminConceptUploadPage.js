@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../config';
+import styles from './AdminConceptUploadPage.module.css'; // New CSS module
 
 const AdminConceptUploadPage = () => {
   const [file, setFile] = useState(null);
@@ -12,25 +13,66 @@ const AdminConceptUploadPage = () => {
   const [progressLog, setProgressLog] = useState([]);
   const [estimatedTime, setEstimatedTime] = useState(null);
 
+  const inputFields = [
+    { name: 'grade', label: 'Grade', value: grade, setter: setGrade },
+    { name: 'board', label: 'Board', value: board, setter: setBoard },
+    { name: 'subject', label: 'Subject', value: subject, setter: setSubject },
+    { name: 'medium', label: 'Medium', value: medium, setter: setMedium },
+  ];
+
+  const validatePdfFile = (file) => {
+    // Check file type using both MIME type and extension
+    const validMimeTypes = ['application/pdf'];
+    const validExtensions = ['pdf'];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    
+    if (!validMimeTypes.includes(file.type)) {
+      setStatus('Error: Please upload a valid PDF file');
+      return false;
+    }
+    
+    if (!validExtensions.includes(fileExtension)) {
+      setStatus('Error: File must have a .pdf extension');
+      return false;
+    }
+
+    if (file.size > 50 * 1024 * 1024) { // 50MB limit
+      setStatus('Error: PDF file size must be less than 10MB');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      const fileExtension = selectedFile.name.split('.').pop().toLowerCase();
-      if (fileExtension === 'pdf') {
+      if (validatePdfFile(selectedFile)) {
         setFile(selectedFile);
+        setStatus('PDF file selected: ' + selectedFile.name);
       } else {
-        setStatus('Please select a valid PDF file.');
         setFile(null);
+        e.target.value = ''; // Reset file input
       }
     }
+  };
+
+  const handleRemoveFile = () => {
+    setFile(null);
+    setStatus('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) {
-      setStatus('No file selected');
-      return; 
+      setStatus('Error: Please select a PDF file');
+      return;
     }
+    
+    if (!validatePdfFile(file)) {
+      return;
+    }
+    
     setProgressLog([]);
     setStatus('Uploading...');
     const formData = new FormData();
@@ -99,57 +141,109 @@ const AdminConceptUploadPage = () => {
   };
 
   return (
-    <div className="adminConceptUploadContainer">
-      <h1>Admin Concept Upload</h1>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        {/* File input for PDF only */}
-        <input
-          type="file"
-          accept=".pdf"
-          onChange={handleFileChange}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Grade"
-          value={grade}
-          onChange={(e) => setGrade(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Board"
-          value={board}
-          onChange={(e) => setBoard(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Subject"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Medium"
-          value={medium}
-          onChange={(e) => setMedium(e.target.value)}
-          required
-        />
-        <button type="submit">Upload Textbook</button>
-      </form>
-      <div className="status">
-        <p>{status}</p>
-        {estimatedTime !== null && estimatedTime > 0 && (
-          <p>Estimated time remaining for current step: {estimatedTime} seconds</p>
-        )}
-        {progressLog.length > 0 && (
-          <ul>
-            {progressLog.map((log, idx) => (
-              <li key={idx}>{log}</li>
-            ))}
-          </ul>
+    <div className={styles.adminPage}>
+      <section className={styles.heroSection}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>Admin Concept Upload</h1>
+          <p className={styles.heroSubtitle}>Upload and process textbook content for student learning</p>
+        </div>
+      </section>
+
+      <div className={styles.uploadSection}>
+        <div className={styles.formContainer}>
+          <form onSubmit={handleSubmit} className={styles.uploadForm}>
+            <div className={styles.fileInputContainer}>
+              {!file ? (
+                <label className={styles.fileInputLabel}>
+                  <span className={styles.uploadIcon}>📄</span>
+                  <span className={styles.requiredField}>
+                    Select PDF File (Max 50MB)
+                    <span className={styles.asterisk}>*</span>
+                  </span>
+                  <input
+                    type="file"
+                    accept=".pdf,application/pdf"
+                    onChange={handleFileChange}
+                    required
+                    className={styles.fileInput}
+                  />
+                  <p className={styles.fileHint}>Only PDF files are allowed</p>
+                </label>
+              ) : (
+                <div className={styles.selectedFileContainer}>
+                  <div className={styles.pdfPreview}>
+                    <span className={styles.pdfIcon}>📎</span>
+                    <span className={styles.fileName}>{file.name}</span>
+                    <button 
+                      type="button"
+                      onClick={handleRemoveFile}
+                      className={styles.removeFileBtn}
+                      aria-label="Remove file"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <p className={styles.fileSize}>
+                    Size: {(file.size / (1024 * 1024)).toFixed(2)} MB
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className={styles.inputGrid}>
+              {inputFields.map(field => (
+                <div key={field.name} className={styles.inputContainer}>
+                  <label htmlFor={field.name} className={styles.inputLabel}>
+                    {field.label}
+                    <span className={styles.asterisk}>*</span>
+                  </label>
+                  <input
+                    id={field.name}
+                    type="text"
+                    placeholder={`Enter ${field.label.toLowerCase()}`}
+                    value={field.value}
+                    onChange={(e) => field.setter(e.target.value)}
+                    required
+                    className={styles.formInput}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <button type="submit" className={styles.submitButton}>
+              Upload Textbook
+            </button>
+          </form>
+        </div>
+
+        {(status || progressLog.length > 0) && (
+          <div className={styles.statusSection}>
+            {status && (
+              <div className={styles.statusCard}>
+                <h3>Upload Status</h3>
+                <p className={styles.statusText}>{status}</p>
+                {estimatedTime !== null && estimatedTime > 0 && (
+                  <p className={styles.estimatedTime}>
+                    Estimated time remaining: {estimatedTime} seconds
+                  </p>
+                )}
+              </div>
+            )}
+
+            {progressLog.length > 0 && (
+              <div className={styles.progressCard}>
+                <h3>Processing Steps</h3>
+                <ul className={styles.progressList}>
+                  {progressLog.map((log, idx) => (
+                    <li key={idx} className={styles.progressItem}>
+                      <span className={styles.checkmark}>✓</span>
+                      {log}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

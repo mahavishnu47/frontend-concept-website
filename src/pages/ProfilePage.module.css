@@ -1,62 +1,180 @@
 /* src/pages/ProfilePage/ProfilePage.module.css */
 
 .profilePage {
-  min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
   padding: 2rem;
-  background-color: #f8f9fa;
+  min-height: 100vh;
+  background: var(--bg-primary, #f8f9fa);
+  transition: all 0.3s ease;
 }
 
 .profileHeader {
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-  padding: 3rem 2rem;
-  border-radius: 15px;
-  color: white;
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  border-radius: 16px;
+  padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.headerInner {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .profilePage {
+    padding: 2rem;
+  }
+
+  .profileHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3rem;
+  }
 }
 
 .headerContent {
-  text-align: center;
-  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .userAvatar {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin: 0 auto 1rem;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease;
+  color: white;
+}
+
+.userAvatar:hover {
+  transform: scale(1.05);
+}
+
+.userDetails {
+  color: white;
 }
 
 .userName {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  margin: 0;
+  font-weight: 600;
 }
 
 .userEmail {
+  margin: 0.5rem 0 0;
   opacity: 0.9;
-  font-size: 1.1rem;
 }
 
 .headerControls {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .headerControls {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 0;
+  }
+}
+
+.themeToggle {
+  display: flex;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.2);
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4ade80;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.profileContent {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.sectionsGrid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
 .collapsibleSection {
-  background: white;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: var(--bg-secondary, white);
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.collapsibleSection:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .sectionHeader {
@@ -65,233 +183,232 @@
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  background: #f8f9fa;
-  transition: background-color 0.3s ease;
+  background: var(--bg-accent, #f8f9fa);
+  transition: all 0.3s ease;
 }
 
 .sectionHeader:hover {
-  background: #e9ecef;
+  background: var(--bg-accent-hover, #e9ecef);
+}
+
+.sectionHeader.active {
+  background: var(--primary-color, #2563eb);
+  color: white;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sectionTitle h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.countBadge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
 }
 
 .toggleIcon {
   font-size: 1.5rem;
-  color: #007bff;
-}
-
-.sectionContent {
-  padding: 1.5rem;
-}
-
-.logoutButton {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 25px;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-weight: 600;
-}
-
-.logoutButton:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.heroSection {
-    text-align: center;
-    padding: 3rem 1rem;
-    margin-bottom: 2rem;
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-    color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.heroTitle {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.heroSubtitle {
-    font-size: 1.2rem;
-    opacity: 0.9;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.mainSection {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.userInfoCard {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.userDetails h2 {
-    margin: 0;
-    color: #333;
-}
-
-.userDetails p {
-    color: #666;
-    margin: 0.5rem 0 0;
-}
-
-.userActions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.section {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-}
-
-.sectionTitle {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #f0f0f0;
+  transition: transform 0.3s ease;
 }
 
 .websitesGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+@media (min-width: 640px) {
+  .websitesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .websitesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.logoutButton {
+  background-color: rgba(220, 38, 38, 0.9);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.logoutButton:hover {
+  background-color: rgb(220, 38, 38);
+  transform: translateY(-1px);
+}
+
+.logoutButtonTopRight {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background-color: rgba(220, 38, 38, 0.9);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+  z-index: 2;
+}
+
+.logoutButtonTopRight:hover {
+  background-color: rgb(220, 38, 38);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
 .modalContent {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    max-width: 400px;
-    width: 90%;
+  background: var(--bg-secondary, white);
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  animation: modalAppear 0.3s ease;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .modalActions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
 }
 
-.modalActions button {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.logoutConfirm {
+  background-color: #dc2626;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.modalActions button:first-child {
-    background: #dc3545;
-    color: white;
+.cancelButton {
+  background-color: #e5e7eb;
+  color: #374151;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.modalActions button:last-child {
-    background: #6c757d;
-    color: white;
-}
-
-.themeToggle {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
+.logoutConfirm:hover,
+.cancelButton:hover {
+  transform: translateY(-1px);
 }
 
 /* Add responsive design */
 @media (max-width: 768px) {
-    .userInfoCard {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-    }
+  .userInfoCard {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
 
-    .websitesGrid {
-        grid-template-columns: 1fr;
-    }
+  .websitesGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .profileSection {
-    background-color: #fff;
-    padding: 50px;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    max-width: 700px;
-    width: 100%;
-    text-align: center;
-  }
-  
-  .profileTitle {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 30px;
-    color: #2c3e50;
-  }
-  
-  .profileDetails {
-    text-align: left;
-    padding: 20px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    background-color: #fefefe;
-  }
-  
-  .profileDetails p {
-    margin-bottom: 10px;
-    color: #555;
-  }
+  background-color: #fff;
+  padding: 50px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  width: 100%;
+  text-align: center;
+}
 
-  /* src/pages/ProfilePage/ProfilePage.module.css */
+.profileTitle {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+.profileDetails {
+  text-align: left;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fefefe;
+}
+
+.profileDetails p {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+/* src/pages/ProfilePage/ProfilePage.module.css */
 
 /* ... (rest of your ProfilePage.module.css styles - profilePage, profileSection, profileTitle, profileDetails, profileDetails p, loading, error) ... */
 
 .logoutButton {
-    background-color: #d32f2f; /* Red logout button color */
-    color: white;
-    padding: 12px 25px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 30px;
-    font-weight: bold;
-  }
-  
-  .logoutButton:hover {
-    background-color: #b71c1c; /* Darker red on hover */
-  }
+  background-color: #d32f2f; /* Red logout button color */
+  color: white;
+  padding: 12px 25px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 30px;
+  font-weight: bold;
+}
+
+.logoutButton:hover {
+  background-color: #b71c1c; /* Darker red on hover */
+}
 
 .profileContainer {
   max-width: 1200px;
@@ -484,4 +601,22 @@ input:checked + .slider:before {
 .darkMode .modalContent {
   background-color: var(--bg-secondary-dark);
   color: var(--text-primary-dark);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+}
+
+@media (min-width: 768px) {
+  .sectionsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .websitesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

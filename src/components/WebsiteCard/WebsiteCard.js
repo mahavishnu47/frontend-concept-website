@@ -6,23 +6,21 @@ import API_BASE_URL from '../../config';
 import { AuthContext } from '../../context/AuthContext';
 
 function WebsiteCard({ website }) {
-  // Initialize the like state based on website data, if available.
   const [likeCount, setLikeCount] = useState(website.likeCount);
   const [shareCount, setShareCount] = useState(website.shareCount);
-  const [isLiked, setIsLiked] = useState(website.isLiked || false); // Modified: based on backend flag
+  const [isLiked, setIsLiked] = useState(website.isLiked || false);
   const { getApiKey, user } = useContext(AuthContext);
   const navigate = useNavigate();
-  // Initialize communityJoined to false instead of website.community_id
   const [communityJoined, setCommunityJoined] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
+  const [copyStatus, setCopyStatus] = useState('Copy & Share');
 
   console.log('WebsiteCard component rendered with website:', website);
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString();
   };
 
-  // NEW: Check if user has already joined this website's community on mount
   useEffect(() => {
     async function checkCommunityMembership() {
       if (user) {
@@ -75,19 +73,16 @@ function WebsiteCard({ website }) {
     }
   };
 
-  // NEW: Construct the share URL for fullscreen view
   const shareUrl = window.location.origin + `/website/${website.website_id}/fullscreen`;
 
-  // Modify handleShare: show the share modal instead of immediate share update
   const handleShare = () => {
     setShareModalVisible(true);
   };
 
-  // NEW: Function to copy the share URL and update share count
   const handleCopyShareUrl = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
-      // After copying, update the share count via API
+      setCopyStatus('Copied!');
       const apiKey = getApiKey();
       const response = await axios.post(
         `${API_BASE_URL}/websites/${website.website_id}/share`,
@@ -97,9 +92,15 @@ function WebsiteCard({ website }) {
       if (response.data.message.indexOf("updated") !== -1) {
         setShareCount(shareCount + 1);
       }
-      setShareModalVisible(false);
+      // Reset button text and close modal after delay
+      setTimeout(() => {
+        setCopyStatus('Copy & Share');
+        setShareModalVisible(false);
+      }, 1500);
     } catch (err) {
       console.error('Error updating share count or copying URL:', err);
+      setCopyStatus('Failed to copy');
+      setTimeout(() => setCopyStatus('Copy & Share'), 1500);
     }
   };
 
@@ -111,7 +112,6 @@ function WebsiteCard({ website }) {
         { user_id: user.user_id },
         { headers: { 'Authorization': `Bearer ${apiKey}` } }
       );
-      // Update state and navigate using the available id
       setCommunityJoined(true);
       setShowJoinModal(false);
       const communityId = website.community_id || website.website_id;
@@ -126,7 +126,6 @@ function WebsiteCard({ website }) {
     if (!communityJoined) {
       setShowJoinModal(true);
     } else {
-      // Navigate to the specific community page
       const communityId = website.community_id || website.website_id;
       navigate(`/communities/${communityId}`);
     }
@@ -134,78 +133,92 @@ function WebsiteCard({ website }) {
 
   return (
     <div className={styles.websiteCard}>
-      <div className={styles.header}>
-        {website.concept_name ? (
-          <div className={styles.conceptName}>
-            <strong>{website.concept_name}</strong>
-          </div>
-        ) : null}
-        {/* <span>Website ID: {website.website_id}</span> */}
-        
-        <Link 
-          to={`/website/${website.website_id}/fullscreen`}
-          className={styles.fullScreenButton}
-        >
-          View Full Screen
-        </Link>
-      </div>
-      <div className={styles.stats}>
-        <span>👍 {likeCount}</span>
-        <span>🔄 {shareCount}</span>
-        <span>Members: {website.member_count || 0}</span>
-      </div>
-      {/* NEW: Display number of community members */}
-      <div className={styles.actions}>
-        <button 
-          onClick={handleLikeToggle} 
-          className={styles.actionButton}
-        >
-          {isLiked ? 'Unlike' : 'Like'}
-        </button>
-        <button 
-          onClick={handleShare} 
-          className={styles.actionButton}
-        >
-          Share
-        </button>
-        <button 
-          onClick={joinCommunity} 
-          className={styles.actionButton}
-        >
-          {communityJoined ? 'Go to Community' : 'Join Community'}
-        </button>
-        {/* "Learn More" button removed */}
-      </div>
-      <div className={styles.websiteContent}>
-        <iframe
-          srcDoc={website.website_code}
-          title={`Website ${website.website_id}`}
-          className={styles.websiteFrame}
-          // Updated sandbox attribute to allow same-origin 
-          sandbox="allow-scripts allow-same-origin allow-popups"
-        />
-      </div>
-      <div>
-      <span>Created: {formatDate(website.created_at)}</span>
+      <div className={styles.cardMain}>
+        {/* Title and Creator */}
+        <h2 className={styles.websiteTitle}>{website.concept_name}</h2>
+        <p className={styles.creatorInfo}>Created by {website.username || 'Anonymous'}</p>
+
+        {/* Action Buttons */}
+        <div className={styles.actionButtons}>
+          <Link 
+            to={`/website/${website.website_id}/fullscreen`}
+            className={styles.actionButton}
+            title="View Full Screen"
+          >
+            <span className={styles.icon}>🖥️</span>
+            <span className={styles.buttonLabel}>View</span>
+          </Link>
+          <button 
+            onClick={handleLikeToggle}
+            className={`${styles.actionButton} ${isLiked ? styles.active : ''}`}
+            title={isLiked ? "Unlike" : "Like"}
+          >
+            <span className={styles.icon}>❤️</span>
+            <span className={styles.buttonLabel}>{likeCount}</span>
+          </button>
+          <button 
+            onClick={handleShare}
+            className={`${styles.actionButton} ${website.isShared ? styles.active : ''}`}
+            title="Share"
+          >
+            <span className={styles.icon}>🔗</span>
+            <span className={styles.buttonLabel}>{shareCount}</span>
+          </button>
+          <button 
+            onClick={joinCommunity}
+            className={`${styles.actionButton} ${communityJoined ? styles.active : ''}`}
+            title={communityJoined ? "Go to Community" : "Join Community"}
+          >
+            <span className={styles.icon}>👥</span>
+            <span className={styles.buttonLabel}>{website.member_count || 0}</span>
+          </button>
+        </div>
+
+        <div className={styles.metadata}>
+          <span className={styles.date}>
+            Created: {formatDate(website.created_at)}
+          </span>
+        </div>
       </div>
 
-      {showJoinModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <p>Do you want to join this community?</p>
-            <button onClick={joinCommunityConfirmed}>Join</button>
-            <button onClick={() => setShowJoinModal(false)}>Cancel</button>
+      {/* Share Modal */}
+      {shareModalVisible && (
+        <div className={styles.modalOverlay} onClick={() => setShareModalVisible(false)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>Share Website</h3>
+              <button 
+                onClick={() => setShareModalVisible(false)}
+                className={styles.closeModalButton}
+              >×</button>
+            </div>
+            <div className={styles.urlBox}>{shareUrl}</div>
+            <div className={styles.modalActions}>
+              <button 
+                onClick={handleCopyShareUrl} 
+                className={`${styles.primaryButton} ${copyStatus === 'Copied!' ? styles.success : ''}`}
+                disabled={copyStatus === 'Copied!'}
+              >
+                {copyStatus}
+              </button>
+              <button onClick={() => setShareModalVisible(false)} className={styles.secondaryButton}>
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {shareModalVisible && (
+      {/* Join Modal */}
+      {showJoinModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <p>Share this URL with others:</p>
-            <p>{shareUrl}</p>
-            <button onClick={handleCopyShareUrl}>Copy & Share</button>
-            <button onClick={() => setShareModalVisible(false)}>Cancel</button>
+            <h3>Join Community</h3>
+            <p>Do you want to join this community?</p>
+            <div className={styles.modalActions}>
+              <button onClick={joinCommunityConfirmed} className={styles.primaryButton}>Join</button>
+              <button onClick={() => setShowJoinModal(false)} className={styles.secondaryButton}>Cancel</button>
+            </div>
           </div>
         </div>
       )}

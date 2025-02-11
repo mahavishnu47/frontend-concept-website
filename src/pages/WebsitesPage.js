@@ -16,16 +16,32 @@ function WebsitesPage() {
   const { getApiKey, isAuthenticated, user } = useContext(AuthContext);
   const { isDarkMode } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(1);
-  const websitesPerPage = 10;
+  const [pageSize, setPageSize] = useState(8); // Changed default to 8
 
   const fetchWebsites = async () => {
     setLoading(true);
+    // NEW: Check cache if no search term provided
+    if (!searchTerm) {
+      const cache = localStorage.getItem("websitesCache");
+      if (cache) {
+        const parsed = JSON.parse(cache);
+        if (Date.now() - parsed.timestamp < 10 * 60 * 1000) {
+          setWebsites(parsed.data);
+          setLoading(false);
+          return;
+        } else {
+          localStorage.removeItem("websitesCache");
+        }
+      }
+    }
+
     try {
       const apiKey = getApiKey();
       const params = {};
       if (isAuthenticated && user) {
         params.user_id = user.user_id;
       }
+      params.summary = true;
       const endpoint = `${API_BASE_URL}/websites/all`;
       const response = await axios.get(endpoint, {
         headers: { 'Authorization': `Bearer ${apiKey}` },
@@ -43,6 +59,10 @@ function WebsitesPage() {
         return website;
       }));
       setWebsites(updatedWebsites);
+      // NEW: Store in cache (only if not searching)
+      if (!searchTerm) {
+        localStorage.setItem("websitesCache", JSON.stringify({ timestamp: Date.now(), data: updatedWebsites }));
+      }
       setError(null);
     } catch (err) {
       console.error('Error fetching websites:', err);
@@ -56,6 +76,14 @@ function WebsitesPage() {
   // Initial load only
   useEffect(() => {
     fetchWebsites();
+  }, []);
+
+  // Add websiteDeleted event listener
+  useEffect(() => {
+    window.addEventListener('website-deleted', fetchWebsites);
+    return () => {
+      window.removeEventListener('website-deleted', fetchWebsites);
+    };
   }, []);
 
   // Update searchTerm on every keystroke
@@ -93,9 +121,9 @@ function WebsitesPage() {
   });
 
   // Pagination calculation on orderedWebsites
-  const totalPages = Math.ceil(orderedWebsites.length / websitesPerPage);
-  const indexOfLastWebsite = currentPage * websitesPerPage;
-  const indexOfFirstWebsite = indexOfLastWebsite - websitesPerPage;
+  const totalPages = Math.ceil(orderedWebsites.length / pageSize);
+  const indexOfLastWebsite = currentPage * pageSize;
+  const indexOfFirstWebsite = indexOfLastWebsite - pageSize;
   const currentWebsites = orderedWebsites.slice(indexOfFirstWebsite, indexOfLastWebsite);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -135,6 +163,17 @@ function WebsitesPage() {
               <option value="mostShared">Most Shared</option>
               <option value="mostMembers">Most Members</option>
             </select>
+            <div className={styles.pageSizeContainer}>
+              <label>Websites per page: </label>
+              <select
+                value={pageSize}
+                onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}
+              >
+                <option value={8}>8</option>
+                <option value={16}>16</option>
+                <option value={24}>24</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -153,6 +192,9 @@ function WebsitesPage() {
               </div>
               
               <div className={styles.pagination}>
+                <button onClick={() => paginate(1)} disabled={currentPage === 1}>
+                  First
+                </button>
                 {currentPage > 1 && (
                   <button onClick={() => paginate(currentPage - 1)}>Prev</button>
                 )}
@@ -177,6 +219,9 @@ function WebsitesPage() {
                 {currentPage < totalPages && (
                   <button onClick={() => paginate(currentPage + 1)}>Next</button>
                 )}
+                <button onClick={() => paginate(totalPages)} disabled={currentPage === totalPages}>
+                  Last
+                </button>
               </div>
             </>
           ) : (

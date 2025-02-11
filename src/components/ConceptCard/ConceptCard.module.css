@@ -1,33 +1,162 @@
 /* src/components/ConceptCard/ConceptCard.module.css */
 
 .conceptCard {
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px var(--shadow-color);
+  background: var(--bg-secondary, white);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  margin-bottom: 1rem;
   cursor: pointer; /* Indicate it's clickable */
 }
 
 .conceptCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-4px);
-  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.header {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.cardHeader {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.primaryInfo {
+  flex: 1;
 }
 
 .conceptName {
+  font-size: 1.25rem;
+  font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 1rem;
-  font-size: 1.2rem;
-  font-weight: bold;
 }
 
-.conceptGrade, 
-.conceptSyllabus, 
-.conceptTopic {
+.metaInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--text-secondary);
-  margin-bottom: 0.5rem;
   font-size: 0.9rem;
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.toggleButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  width: auto;
+  min-width: 120px;
+  margin-top: 1rem;
+}
+
+.toggleButton:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.buttonIcon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.contentWrapper {
+  padding: 1.5rem;
+  background: var(--bg-accent);
+}
+
+.contentSection {
+  padding: 1.25rem;
+  background: var(--bg-accent, #f8f9fa);
+  animation: slideDown 0.3s ease-out;
+}
+
+.conceptContent {
+  line-height: 1.6;
+  color: var(--text-primary, #1f2937);
+  padding: 1rem;
+  background: var(--bg-secondary, #fff);
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+}
+
+.conceptContent p {
+  margin: 0;
+}
+
+.scrollableContent {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 1rem;
+  background: var(--content-bg, #f8fafc);
+  border-radius: 6px;
+  line-height: 1.6;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+}
+
+.markdownContent {
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.contentActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Custom Scrollbar Styles */
+.scrollableContent::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollableContent::-webkit-scrollbar-track {
+  background: var(--scrollbar-track, #f1f1f1);
+  border-radius: 4px;
+}
+
+.scrollableContent::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, #888);
+  border-radius: 4px;
+}
+
+.scrollableContent::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover, #555);
 }
 
 .learnButton {
@@ -44,4 +173,260 @@
 .learnButton:hover {
   background-color: var(--secondary-color);
   transform: translateY(-2px);
+}
+
+.copyButton {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--primary-color, #2563eb);
+  color: white;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.copyButton:hover:not(:disabled) {
+  background: var(--primary-hover, #1d4ed8);
+  transform: translateY(-1px);
+}
+
+.copyButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.copyButton.success {
+  background: var(--success-color, #10B981);
+  background: var(--success-color);
+}
+
+.noContent {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 2rem;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark mode support */
+:global(.dark-mode) .conceptCard {
+  background: var(--bg-secondary-dark, #1f2937);
+}
+
+:global(.dark-mode) .conceptName {
+  color: var(--text-primary-dark, #f3f4f6);
+}
+
+:global(.dark-mode) .conceptMeta p {
+  color: var(--text-secondary-dark, #9ca3af);
+}
+
+:global(.dark-mode) .contentSection {
+  background: var(--bg-accent-dark, #374151);
+}
+
+:global(.dark-mode) .conceptContent {
+  color: var(--text-primary-dark, #f3f4f6);
+}
+
+:global(.darkMode) .scrollableContent {
+  background: var(--dark-content-bg, #1e293b);
+  color: var(--dark-text, #e2e8f0);
+}
+
+:global(.darkMode) .scrollableContent::-webkit-scrollbar-track {
+  background: var(--dark-scrollbar-track, #334155);
+}
+
+:global(.darkMode) .scrollableContent::-webkit-scrollbar-thumb {
+  background: var(--dark-scrollbar-thumb, #64748b);
+}
+
+:global(.darkMode) .scrollableContent::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-scrollbar-thumb-hover, #94a3b8);
+}
+
+.centerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.conceptTitle {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.actionIcons {
+  display: flex;
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+.iconButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.iconButton:hover {
+  transform: translateY(-2px);
+  color: var(--primary-color);
+}
+
+.iconText {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.subjectTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-accent);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.tagIcon {
+  font-size: 1rem;
+}
+
+.cardMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 2rem;
+  margin: 1rem 0;
+}
+
+.actionButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.actionButton:hover {
+  transform: translateY(-2px);
+  color: var(--primary-color);
+}
+
+.buttonLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.tags {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tagIcon {
+  font-size: 1.1rem;
+}
+
+.learnMoreButton {
+  width: 100%;
+  max-width: 200px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.learnMoreButton:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.learnMoreButton:hover::before {
+  content: attr(title);
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.buttonText {
+  font-size: 1rem;
+}
+
+.buttonIcon {
+  font-size: 1.2rem;
+  line-height: 1;
 }
