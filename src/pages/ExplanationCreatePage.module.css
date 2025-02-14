@@ -49,3 +49,51 @@
 .explanationButton:hover {
   background-color: #0056b3;
 }
+
+.filterGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.filterSelect {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236B7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+}
+
+.filterSelect:hover, 
+.filterSelect:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.loadingDropdowns {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-secondary);
+}
+
+/* Dark mode support */
+:global(.darkMode) .filterSelect {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
+  border-color: var(--border-color-dark);
+}
+
+:global(.darkMode) .filterSelect option {
+  background-color: var(--bg-secondary-dark);
+  color: var(--text-primary-dark);
+}

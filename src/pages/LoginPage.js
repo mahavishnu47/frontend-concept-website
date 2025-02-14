@@ -27,16 +27,21 @@ function LoginPage({ user, loginFunction }) {
     }
 
     const loginData = { email, password }; // Prepare login data
-    const { success, error: loginError } = await login(loginData); // Call login function from AuthContext
-
-    if (!success) {
-      setError(loginError || 'Login failed.'); // Set error from context or generic message
-    } else {
-      // Debug: Check the stored API key after login
-      const storedToken = localStorage.getItem("authToken");
-      console.log("DEBUG: Stored authToken after login:", storedToken);
+    try {
+      const { success, error: loginError } = await login(loginData); // Call login function from AuthContext
+      if (!success) {
+        // Display API error message if provided; fallback to generic message.
+        setError(loginError || 'Login failed due to invalid credentials.');
+      } else {
+        // Debug: Check the stored API key after login
+        const storedToken = localStorage.getItem("authToken");
+        console.log("DEBUG: Stored authToken after login:", storedToken);
+      }
+    } catch (err) {
+      // Catch network or unexpected errors gracefully.
+      console.error("Login error:", err);
+      setError('An unexpected error occurred. Please try again later.');
     }
-    // On successful login, AuthContext's login function will handle redirection
   };
 
   return (

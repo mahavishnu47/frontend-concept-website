@@ -20,6 +20,9 @@ import { ThemeProvider } from './context/ThemeContext';
 import './styles/theme.css';  // Import global theme styles
 import ThemeWrapper from './components/ThemeWrapper';
 import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import ContactUs from './pages/ContactUs';
 
 function App() {
   return (
@@ -82,6 +85,9 @@ function App() {
                 </ProtectedAdminRoute>
               } 
             />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/contact" element={<ContactUs />} />
           </Routes>
         </ThemeWrapper>
       </AuthProvider>

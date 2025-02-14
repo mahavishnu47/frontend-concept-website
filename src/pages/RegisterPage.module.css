@@ -112,3 +112,13 @@
     color: #388e3c; /* Dark green text */
     border: 1px solid #a5d6a7; /* Light green border */
   }
+
+/* NEW: Additional style for server error messages */
+.serverError {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #ffdddd;
+    border: 1px solid #ff5c5c;
+    color: #d8000c;
+    border-radius: 5px;
+}

@@ -16,12 +16,12 @@ function WebsitesPage() {
   const { getApiKey, isAuthenticated, user } = useContext(AuthContext);
   const { isDarkMode } = useContext(ThemeContext);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(8); // Changed default to 8
+  const [pageSize, setPageSize] = useState(4); // Default set to 4
 
   const fetchWebsites = async () => {
     setLoading(true);
-    // NEW: Check cache if no search term provided
-    if (!searchTerm) {
+    // NEW: Use cache if no search term and default order criteria
+    if (!searchTerm && orderCriteria === 'default') {
       const cache = localStorage.getItem("websitesCache");
       if (cache) {
         const parsed = JSON.parse(cache);
@@ -34,34 +34,23 @@ function WebsitesPage() {
         }
       }
     }
-
     try {
       const apiKey = getApiKey();
-      const params = {};
-      if (isAuthenticated && user) {
-        params.user_id = user.user_id;
-      }
-      params.summary = true;
+      const params = {
+        user_id: isAuthenticated && user ? user.user_id : undefined,
+        orderCriteria, // pass order criteria
+        page: currentPage,
+        pageSize: pageSize
+      };
       const endpoint = `${API_BASE_URL}/websites/all`;
       const response = await axios.get(endpoint, {
         headers: { 'Authorization': `Bearer ${apiKey}` },
         params
       });
-      const updatedWebsites = await Promise.all(response.data.map(async website => {
-        try {
-          const commResponse = await axios.get(`${API_BASE_URL}/communities/${website.website_id}`, {
-            headers: { 'Authorization': `Bearer ${apiKey}` }
-          });
-          website.member_count = commResponse.data.community.member_count || 0;
-        } catch (err) {
-          website.member_count = 0;
-        }
-        return website;
-      }));
-      setWebsites(updatedWebsites);
-      // NEW: Store in cache (only if not searching)
-      if (!searchTerm) {
-        localStorage.setItem("websitesCache", JSON.stringify({ timestamp: Date.now(), data: updatedWebsites }));
+      setWebsites(response.data.data);
+      // NEW: Cache the data if no search and default ordering
+      if (!searchTerm && orderCriteria === 'default') {
+        localStorage.setItem("websitesCache", JSON.stringify({ timestamp: Date.now(), data: response.data.data }));
       }
       setError(null);
     } catch (err) {
@@ -73,10 +62,10 @@ function WebsitesPage() {
     }
   };
 
-  // Initial load only
+  // Re-fetch websites when page, pageSize, or order criteria changes
   useEffect(() => {
     fetchWebsites();
-  }, []);
+  }, [currentPage, pageSize, orderCriteria]);
 
   // Add websiteDeleted event listener
   useEffect(() => {
@@ -169,9 +158,9 @@ function WebsitesPage() {
                 value={pageSize}
                 onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}
               >
+                <option value={4}>4</option>
                 <option value={8}>8</option>
-                <option value={16}>16</option>
-                <option value={24}>24</option>
+                <option value={12}>12</option>
               </select>
             </div>
           </div>

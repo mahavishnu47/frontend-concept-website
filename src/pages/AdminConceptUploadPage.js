@@ -12,6 +12,7 @@ const AdminConceptUploadPage = () => {
   const [status, setStatus] = useState('');
   const [progressLog, setProgressLog] = useState([]);
   const [estimatedTime, setEstimatedTime] = useState(null);
+  const [uploadInProgress, setUploadInProgress] = useState(false);
 
   const inputFields = [
     { name: 'grade', label: 'Grade', value: grade, setter: setGrade },
@@ -45,6 +46,10 @@ const AdminConceptUploadPage = () => {
   };
 
   const handleFileChange = (e) => {
+    if (uploadInProgress) {
+      setStatus('An upload is already in progress. Please wait.');
+      return;
+    }
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       if (validatePdfFile(selectedFile)) {
@@ -58,12 +63,20 @@ const AdminConceptUploadPage = () => {
   };
 
   const handleRemoveFile = () => {
+    if (uploadInProgress) {
+      setStatus('Cannot remove the file while upload is in progress.');
+      return;
+    }
     setFile(null);
     setStatus('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (uploadInProgress) {
+      setStatus('Upload already in progress. Please wait.');
+      return;
+    }
     if (!file) {
       setStatus('Error: Please select a PDF file');
       return;
@@ -73,6 +86,7 @@ const AdminConceptUploadPage = () => {
       return;
     }
     
+    setUploadInProgress(true);
     setProgressLog([]);
     setStatus('Uploading...');
     const formData = new FormData();
@@ -113,6 +127,7 @@ const AdminConceptUploadPage = () => {
     } catch (err) {
       console.error('Upload error:', err);
       setStatus(`Error: ${err.message}`);
+      setUploadInProgress(false);
     }
   };
 
@@ -136,8 +151,9 @@ const AdminConceptUploadPage = () => {
         clearInterval(interval);
         setEstimatedTime(0);
         setStatus('Upload and processing complete.');
+        setUploadInProgress(false);
       }
-    }, 1000);
+    }, 500);
   };
 
   return (
@@ -165,6 +181,7 @@ const AdminConceptUploadPage = () => {
                     accept=".pdf,application/pdf"
                     onChange={handleFileChange}
                     required
+                    disabled={uploadInProgress}
                     className={styles.fileInput}
                   />
                   <p className={styles.fileHint}>Only PDF files are allowed</p>
@@ -177,6 +194,7 @@ const AdminConceptUploadPage = () => {
                     <button 
                       type="button"
                       onClick={handleRemoveFile}
+                      disabled={uploadInProgress}
                       className={styles.removeFileBtn}
                       aria-label="Remove file"
                     >
@@ -204,13 +222,19 @@ const AdminConceptUploadPage = () => {
                     value={field.value}
                     onChange={(e) => field.setter(e.target.value)}
                     required
+                    disabled={uploadInProgress}
                     className={styles.formInput}
                   />
                 </div>
               ))}
             </div>
 
-            <button type="submit" className={styles.submitButton}>
+            <button 
+              type="submit" 
+              className={styles.submitButton} 
+              disabled={uploadInProgress}
+              title={uploadInProgress ? "Cannot upload while another file is being processed" : ""}
+            >
               Upload Textbook
             </button>
           </form>

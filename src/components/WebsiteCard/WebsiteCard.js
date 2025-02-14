@@ -131,6 +131,9 @@ function WebsiteCard({ website }) {
     }
   };
 
+  // UPDATED: Compute memberCount using the same logic as CommunitiesPage.js
+  const memberCount = website.member_count || 0;
+
   return (
     <div className={styles.websiteCard}>
       <div className={styles.cardMain}>
@@ -170,7 +173,18 @@ function WebsiteCard({ website }) {
             title={communityJoined ? "Go to Community" : "Join Community"}
           >
             <span className={styles.icon}>👥</span>
-            <span className={styles.buttonLabel}>{website.member_count || 0}</span>
+            <span className={styles.buttonLabel}>
+              <div className={styles.members}>
+                {memberCount > 0 
+                  ? Array.from({ length: Math.min(3, memberCount) }).map((_, idx) => (
+                      <div key={idx} className={styles.memberAvatar}>
+                        {idx === 2 && memberCount > 3 ? `+${memberCount - 2}` : '👤'}
+                      </div>
+                    ))
+                  : '0'
+                }
+              </div>
+            </span>
           </button>
         </div>
 

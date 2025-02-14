@@ -3,72 +3,138 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import API_BASE_URL from '../config';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext';
+import styles from './CommunityChatPage.module.css';
 
 function CommunityChatPage() {
   const { community_id } = useParams();
   const { user, getApiKey } = useContext(AuthContext);
+  const { isDarkMode } = useContext(ThemeContext);
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState('');
+  const [community, setCommunity] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("[DEBUG] CommunityChatPage useEffect triggered with community_id:", community_id);
-    async function fetchMessages() {
+    const fetchCommunityDetails = async () => {
       try {
         const apiKey = getApiKey();
-        console.log('Fetching messages for community_id:', community_id);
-        console.log('Using API key:', apiKey);
-        
         const response = await axios.get(
-          `${API_BASE_URL}/chat_messages?website_id=${community_id}`,
+          `${API_BASE_URL}/communities/${community_id}`,
           { headers: { 'Authorization': `Bearer ${apiKey}` } }
         );
-        console.log('Received messages:', response.data);
+        
+        console.log('Community details:', response.data);
+        
+        if (response.data && response.data.community) {
+          setCommunity({
+            concept_name: response.data.community.concept_name,
+            username: response.data.community.username || 'Anonymous',
+            website_id: response.data.community.website_id,
+            created_at: response.data.community.created_at
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching community details:', err);
+      }
+    };
+
+    const fetchMessages = async () => {
+      try {
+        const apiKey = getApiKey();
+        const response = await axios.get(
+          `${API_BASE_URL}/communities/${community_id}/messages`,
+          { headers: { 'Authorization': `Bearer ${apiKey}` } }
+        );
         setMessages(response.data);
       } catch (err) {
-        console.error('Error fetching messages:', err.response?.data || err.message);
+        console.error('Error fetching messages:', err);
+      } finally {
+        setLoading(false);
       }
+    };
+
+    if (community_id) {
+      fetchCommunityDetails();
+      fetchMessages();
     }
-    fetchMessages();
-    // Optionally add polling or web socket updates here for multi-user realtime chat.
   }, [community_id, getApiKey]);
 
-  const sendMessage = async () => {
-    console.log("[DEBUG] sendMessage triggered with newMsg:", newMsg);
+  const sendMessage = async (e) => {
+    e.preventDefault();
     if (!newMsg.trim()) return;
+
     try {
       const apiKey = getApiKey();
-      console.log("[DEBUG] Sending message with API_BASE_URL:", API_BASE_URL);
-      console.log("[DEBUG] Payload:", { website_id: community_id, user_id: user.user_id, content: newMsg });
-      
       const response = await axios.post(
-        `${API_BASE_URL}/chat_messages`,
-        { website_id: community_id, user_id: user.user_id, content: newMsg },
+        `${API_BASE_URL}/communities/${community_id}/messages`,
+        { user_id: user.user_id, content: newMsg },
         { headers: { 'Authorization': `Bearer ${apiKey}` } }
       );
-      console.log("[DEBUG] Message sent, response:", response.data);
       setMessages(prev => [...prev, response.data]);
       setNewMsg('');
     } catch (err) {
-      console.error('Error sending message:', err.response?.data || err.message);
+      console.error('Error sending message:', err);
     }
   };
 
   return (
-    <div>
-      <h2>Community Chat</h2>
-      <div>
-        {messages.map(msg => (
-          <div key={msg.message_id}>
-            <strong>{msg.username}:</strong> {msg.content}
-          </div>
-        ))}
+    <div className={`${styles.chatPage} ${isDarkMode ? 'darkMode' : ''}`}>
+      <section className={styles.heroSection}>
+        <h1 className={styles.heroTitle}>
+          {community ? community.concept_name : 'Loading...'}
+        </h1>
+        <p className={styles.heroSubtitle}>
+          Created by {community ? community.username : 'Anonymous'}
+        </p>
+        {community && community.created_at && (
+          <p className={styles.creationDate}>
+            Created on {new Date(community.created_at).toLocaleDateString()}
+          </p>
+        )}
+      </section>
+
+      <div className={styles.mainSection}>
+        <div className={styles.chatContainer}>
+          {loading ? (
+            <div className={styles.loading}>Loading messages...</div>
+          ) : (
+            <div className={styles.messagesContainer}>
+              {messages.map((msg, idx) => (
+                <div 
+                  key={msg.post_id || idx}
+                  className={`${styles.message} ${msg.user_id === user.user_id ? styles.ownMessage : ''}`}
+                >
+                  {msg.user_id !== user.user_id && (
+                    <div className={styles.userAvatar}>
+                      {msg.user_email?.[0].toUpperCase() || '?'}
+                    </div>
+                  )}
+                  <div className={styles.messageContent}>
+                    <p>{msg.content}</p>
+                    <span className={styles.messageTime}>
+                      {new Date(msg.created_at).toLocaleTimeString()}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <form onSubmit={sendMessage} className={styles.messageForm}>
+            <input
+              type="text"
+              value={newMsg}
+              onChange={(e) => setNewMsg(e.target.value)}
+              placeholder="Type your message..."
+              className={styles.messageInput}
+            />
+            <button type="submit" className={styles.sendButton}>
+              Send
+            </button>
+          </form>
+        </div>
       </div>
-      <textarea
-        value={newMsg}
-        onChange={(e) => setNewMsg(e.target.value)}
-        placeholder="Type your message..."
-      />
-      <button onClick={sendMessage}>Send</button>
     </div>
   );
 }

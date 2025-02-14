@@ -7,9 +7,26 @@ import LoadingModal from '../components/LoadingModal/LoadingModal';
 import styles from './ExplanationCreatePage.module.css';
 import { ThemeContext } from '../context/ThemeContext';
 
+// Add FilterSelect component
+function FilterSelect({ label, value, onChange, options, placeholder }) {
+  return (
+    <select 
+      className={styles.filterSelect} 
+      value={value} 
+      onChange={(e) => onChange(e.target.value)}
+      aria-label={label}
+    >
+      <option value="">{placeholder}</option>
+      {options.map(option => (
+        <option key={option} value={option}>{option}</option>
+      ))}
+    </select>
+  );
+}
+
 function ExplanationCreatePage() {
   console.log('ExplanationCreatePage rendering'); // Add this debug log
-  const { getApiKey, user } = useContext(AuthContext);
+  const { getApiKey, user, isAuthenticated } = useContext(AuthContext);
   const { isDarkMode } = useContext(ThemeContext);
   const [inputValue, setInputValue] = useState('');
   const [createdWebsite, setCreatedWebsite] = useState(null);
@@ -21,19 +38,24 @@ function ExplanationCreatePage() {
   const [board, setBoard] = useState('');
   const [subject, setSubject] = useState('');
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showModerationModal, setShowModerationModal] = useState(false); // new state for moderation modal
 
   // New state for dynamically loaded dropdown options
   const [gradeOptions, setGradeOptions] = useState([]);
   const [boardOptions, setBoardOptions] = useState([]);
   const [subjectOptions, setSubjectOptions] = useState([]);
+  // Updated: Change initial state to empty array for mediumOptions
   const [mediumOptions, setMediumOptions] = useState([]);
   const [optionsLoading, setOptionsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchOptions = async () => {
+    const fetchFilterOptions = async () => {
+      setOptionsLoading(true);
       try {
         const apiKey = getApiKey();
-        const headers = { Authorization: `Bearer ${apiKey}` };
+        if (!isAuthenticated || !apiKey) return;
+        const headers = { 'Authorization': `Bearer ${apiKey}` };
+        // Fetch grades, boards, subjects, and mediums from backend
         const [gradesRes, boardsRes, subjectsRes, mediumsRes] = await Promise.all([
           axios.get(`${API_BASE_URL}/grades`, { headers }),
           axios.get(`${API_BASE_URL}/boards`, { headers }),
@@ -49,11 +71,34 @@ function ExplanationCreatePage() {
       }
       setOptionsLoading(false);
     };
-    fetchOptions();
-  }, [getApiKey]);
+    fetchFilterOptions();
+  }, [getApiKey, isAuthenticated]);
+
+  // New moderation function using Gemini 2.0 Flash model via backend endpoint
+  const moderateContent = async (text) => {
+    try {
+      const apiKey = getApiKey();
+      const response = await axios.post(
+        `${API_BASE_URL}/moderate-chat`,
+        { text },
+        { headers: { 'Authorization': `Bearer ${apiKey}` } }
+      );
+      // Assume backend returns { harmful: true/false }
+      return response.data.safe;
+    } catch (err) {
+      console.error('Moderation check failed, defaulting to safe:', err);
+      return false;
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // New: Run moderation check first
+    const isHarmful = await moderateContent(inputValue);
+    if (isHarmful) {
+      setShowModerationModal(true);
+      return;
+    }
     // Check if any extra info is missing
     if (!grade || !medium || !board || !subject) {
       setShowDetailsModal(true);
@@ -113,34 +158,38 @@ function ExplanationCreatePage() {
         />
         {/* Render dropdowns dynamically */}
         {optionsLoading ? (
-          <p>Loading options...</p>
+          <div className={styles.loadingDropdowns}>Loading options...</div>
         ) : (
-          <>
-            <select value={grade} onChange={(e) => setGrade(e.target.value)}>
-              <option value="">Select Grade</option>
-              {gradeOptions.map((g, i) => (
-                <option key={i} value={g}>{g}</option>
-              ))}
-            </select>
-            <select value={medium} onChange={(e) => setMedium(e.target.value)}>
-              <option value="">Select Medium</option>
-              {mediumOptions.map((m, i) => (
-                <option key={i} value={m}>{m}</option>
-              ))}
-            </select>
-            <select value={board} onChange={(e) => setBoard(e.target.value)}>
-              <option value="">Select Board</option>
-              {boardOptions.map((b, i) => (
-                <option key={i} value={b}>{b}</option>
-              ))}
-            </select>
-            <select value={subject} onChange={(e) => setSubject(e.target.value)}>
-              <option value="">Select Subject</option>
-              {subjectOptions.map((s, i) => (
-                <option key={i} value={s}>{s}</option>
-              ))}
-            </select>
-          </>
+          <div className={styles.filterGroup}>
+            <FilterSelect
+              label="Select Grade"
+              value={grade}
+              onChange={setGrade}
+              options={gradeOptions}
+              placeholder="Select Grade"
+            />
+            <FilterSelect
+              label="Select Medium"
+              value={medium}
+              onChange={setMedium}
+              options={mediumOptions}
+              placeholder="Select Medium"
+            />
+            <FilterSelect
+              label="Select Board"
+              value={board}
+              onChange={setBoard}
+              options={boardOptions}
+              placeholder="Select Board"
+            />
+            <FilterSelect
+              label="Select Subject"
+              value={subject}
+              onChange={setSubject}
+              options={subjectOptions}
+              placeholder="Select Subject"
+            />
+          </div>
         )}
         <button type="submit" className={styles.explanationButton}>Create</button>
       </form>
@@ -158,6 +207,16 @@ function ExplanationCreatePage() {
             </p>
             <button onClick={() => handleModalChoice('add')}>Provide details</button>
             <button onClick={() => handleModalChoice('skip')}>Skip</button>
+          </div>
+        </div>
+      )}
+
+      {/* New: Moderation Modal */}
+      {showModerationModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <p>You are not allowed to search harmful content. Only educational content is permitted.</p>
+            <button onClick={() => setShowModerationModal(false)}>OK</button>
           </div>
         </div>
       )}
