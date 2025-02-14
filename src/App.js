@@ -1,5 +1,5 @@
-import React from 'react';  // Remove useContext since we don't need it here
-import { Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom'; // Removed BrowserRouter import
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -7,7 +7,7 @@ import ConceptsPage from './pages/ConceptsPage';
 import ProfilePage from './pages/ProfilePage';
 import WebsitesPage from './pages/WebsitesPage';
 import FullScreenWebsite from './pages/FullScreenWebsite';
-import CommunityPage from './pages/CommunityPage'; // Import CommunityPage
+import CommunityPage from './pages/CommunityPage';
 import ExplanationCreatePage from './pages/ExplanationCreatePage';
 import Navbar from '../src/components/NavBar';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -17,12 +17,11 @@ import CommunityChatPage from './pages/CommunityChatPage';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import AdminConceptUploadPage from './pages/AdminConceptUploadPage';
 import { ThemeProvider } from './context/ThemeContext';
-import './styles/theme.css';  // Import global theme styles
+import './styles/theme.css';
 import ThemeWrapper from './components/ThemeWrapper';
-import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
-import ContactUs from './pages/ContactUs';
+import { AuthProvider } from './context/AuthContext';
+import ChatPage from './pages/ChatPage';
+import BooksChatPage from './pages/BooksChatPage';
 
 function App() {
   return (
@@ -35,7 +34,6 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
-            {/* Protected Routes - only accessible when authenticated */}
             <Route path="/concepts" element={
               <ProtectedRoute>
                 <ConceptsPage />
@@ -61,7 +59,6 @@ function App() {
                 <CommunityPage />
               </ProtectedRoute>
             } />
-            {/* Optionally a list view */}
             <Route path="/communities" element={
               <ProtectedRoute>
                 <CommunitiesPage />
@@ -85,9 +82,7 @@ function App() {
                 </ProtectedAdminRoute>
               } 
             />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/chat" element={<BooksChatPage />} />
           </Routes>
         </ThemeWrapper>
       </AuthProvider>

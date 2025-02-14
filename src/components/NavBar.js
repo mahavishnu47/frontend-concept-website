@@ -22,10 +22,13 @@ function Navbar() {
               <Link to="/websites" className={styles.navLink}>Websites</Link>
             </li>
             <li>
-              <Link to="/communities" className={styles.navLink}>My Communities</Link> {/* Updated text */}
+              <Link to="/communities" className={styles.navLink}>Communities</Link> {/* New link */}
             </li>
             <li>
               <Link to="/create-explanation" className={styles.navLink}>Create Explanation</Link>
+            </li>
+            <li>
+              <Link to="/chat" className={styles.navLink}>Chat</Link> {/* New link */}
             </li>
             {isAuthenticated && user?.is_admin && (
               <li>
