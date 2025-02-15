@@ -31,11 +31,18 @@ function Navbar() {
               <Link to="/chat" className={styles.navLink}>Chat</Link> {/* New link */}
             </li>
             {isAuthenticated && user?.is_admin && (
-              <li>
-                <Link to="/admin/upload-concept" className={styles.navLink}>
-                  Admin Upload
-                </Link>
-              </li>
+              <>
+                <li>
+                  <Link to="/admin/upload-concept" className={styles.navLink}>
+                    Admin Upload
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/admin/book-management" className={styles.navLink}>
+                    Admin Books
+                  </Link>
+                </li>
+              </>
             )}
             {/* Removed Logout Button from here */}
           </>

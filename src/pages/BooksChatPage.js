@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { default as ReactMarkdown } from 'react-markdown'; // Add ReactMarkdown import
 import API_BASE_URL from '../config';
+import { ThemeContext } from '../context/ThemeContext';
+import styles from './BooksChatPage.module.css';
 
 function BooksChatPage() {
   const [bookTree, setBookTree] = useState({});
@@ -8,6 +11,9 @@ function BooksChatPage() {
   const [chatHistory, setChatHistory] = useState([]);
   const [userInput, setUserInput] = useState('');
   const userId = "1"; // Demo user id
+  const { isDarkMode } = useContext(ThemeContext);
+  const [expandedGrades, setExpandedGrades] = useState({});
+  const messagesEndRef = React.useRef(null);
 
   // Fetch book data and construct tree from Books table
   useEffect(() => {
@@ -77,61 +83,135 @@ function BooksChatPage() {
     }
   };
 
+  // Add toggle function for grades
+  const toggleGrade = (grade) => {
+    setExpandedGrades(prev => ({
+      ...prev,
+      [grade]: !prev[grade]
+    }));
+  };
+
+  // Auto-scroll to bottom when new messages arrive
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory]);
+
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      {/* Dropdown tree panel */}
-      <div style={{ width: '30%', borderRight: '1px solid #ccc', padding: '1rem', overflowY: 'auto' }}>
-        <h3>Select a Grade & Subject</h3>
-        {Object.keys(bookTree).length > 0 ? (
-          Object.keys(bookTree).map(grade => (
-            <div key={grade}>
-              <strong>{grade}</strong>
-              <ul>
-                {bookTree[grade].map(item => (
-                  <li key={item.bookId}>
-                    <button
-                      style={{ background: 'none', border: 'none', color: 'blue', cursor: 'pointer' }}
-                      onClick={() => setSelectedBook({ bookId: item.bookId, subject: item.subject, grade })}
+    <div className={`${styles.chatPage} ${isDarkMode ? 'darkMode' : ''}`}>
+      {/* Hero Section */}
+      <section className={styles.heroSection}>
+        <h1 className={styles.heroTitle}>
+          Interactive Book Discussions
+        </h1>
+        <p className={styles.heroSubtitle}>
+          Select a book and start an AI-powered conversation about its contents
+        </p>
+      </section>
+
+      <div className={styles.mainSection}>
+        <div className={styles.contentContainer}>
+          {/* Books Tree Panel */}
+          <div className={styles.booksPanel}>
+            <h2 className={styles.panelTitle}>Select a Book</h2>
+            <div className={styles.treeContainer}>
+              {Object.keys(bookTree).length > 0 ? (
+                Object.keys(bookTree).map(grade => (
+                  <div key={grade} className={`${styles.gradeSection} ${expandedGrades[grade] ? styles.expanded : ''}`}>
+                    <button 
+                      className={styles.gradeToggle}
+                      onClick={() => toggleGrade(grade)}
                     >
-                      {item.subject}
+                      <span className={styles.toggleIcon}>
+                        {expandedGrades[grade] ? '−' : '+'}
+                      </span>
+                      <h3 className={styles.gradeTitle}>{grade}</h3>
                     </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        ) : (
-          <p>Loading books...</p>
-        )}
-      </div>
-      {/* Chat window panel */}
-      <div style={{ width: '70%', padding: '1rem', display: 'flex', flexDirection: 'column' }}>
-        {selectedBook ? (
-          <>
-            <h3>Chat about {selectedBook.grade} - {selectedBook.subject}</h3>
-            <div style={{ flex: 1, overflowY: 'auto', border: '1px solid #ccc', padding: '1rem', marginBottom: '1rem' }}>
-              {chatHistory.length > 0 ? (
-                chatHistory.map((msg, index) => (
-                  <p key={index}><strong>{msg.role}:</strong> {msg.text}</p>
+                    <ul className={`${styles.subjectList} ${expandedGrades[grade] ? styles.expanded : ''}`}>
+                      {bookTree[grade].map(item => (
+                        <li key={item.bookId}>
+                          <button
+                            className={`${styles.subjectButton} ${
+                              selectedBook?.bookId === item.bookId ? styles.selected : ''
+                            }`}
+                            onClick={() => setSelectedBook({ bookId: item.bookId, subject: item.subject, grade })}
+                          >
+                            {item.subject}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ))
               ) : (
-                <p>No previous messages.</p>
+                <div className={styles.loading}>Loading books...</div>
               )}
             </div>
-            <div>
-              <input
-                type="text"
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                placeholder="Enter your message..."
-                style={{ width: '80%', padding: '0.5rem' }}
-              />
-              <button onClick={sendMessage} style={{ padding: '0.5rem 1rem', marginLeft: '0.5rem' }}>Send</button>
-            </div>
-          </>
-        ) : (
-          <p>Please select a grade and subject to start chatting.</p>
-        )}
+          </div>
+
+          {/* Updated Chat Panel */}
+          <div className={styles.chatPanel}>
+            {selectedBook ? (
+              <>
+                <div className={styles.chatHeader}>
+                  <h2 className={styles.chatTitle}>
+                    {selectedBook.grade} - {selectedBook.subject}
+                  </h2>
+                </div>
+                <div className={styles.messagesWrapper}>
+                  <div className={styles.messagesContainer}>
+                    {chatHistory.length > 0 ? (
+                      chatHistory.map((msg, index) => (
+                        <div
+                          key={index}
+                          className={`${styles.message} ${
+                            msg.role === 'Bot' ? styles.botMessage : styles.userMessage
+                          }`}
+                        >
+                          {msg.role === 'Bot' ? (
+                            <ReactMarkdown className={styles.markdownContent}>
+                              {msg.text}
+                            </ReactMarkdown>
+                          ) : (
+                            <p className={styles.messageText}>{msg.text}</p>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div className={styles.emptyState}>
+                        No previous messages. Start a conversation!
+                      </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
+                </div>
+                <form className={styles.messageForm} onSubmit={(e) => {
+                  e.preventDefault();
+                  sendMessage();
+                }}>
+                  <input
+                    type="text"
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    placeholder="Type your message..."
+                    className={styles.messageInput}
+                  />
+                  <button type="submit" className={styles.sendButton}>
+                    Send
+                  </button>
+                </form>
+              </>
+            ) : (
+              <div className={styles.placeholderState}>
+                <h3>Welcome to Book Discussions!</h3>
+                <p>Please select a grade and subject to start chatting.</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

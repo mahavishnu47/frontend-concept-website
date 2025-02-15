@@ -13,6 +13,7 @@ const AdminConceptUploadPage = () => {
   const [progressLog, setProgressLog] = useState([]);
   const [estimatedTime, setEstimatedTime] = useState(null);
   const [uploadInProgress, setUploadInProgress] = useState(false);
+  const [bookTitle, setBookTitle] = useState(""); // new state for book title
 
   const inputFields = [
     { name: 'grade', label: 'Grade', value: grade, setter: setGrade },
@@ -95,10 +96,18 @@ const AdminConceptUploadPage = () => {
     formData.append('board', board);
     formData.append('subject', subject);
     formData.append('medium', medium);
+    formData.append('book_title', bookTitle); // include book title
 
     // Debug: Log token value before sending request
-    const token = localStorage.getItem('authToken');
-    console.log("Token from storage:", token);
+    const storedToken = localStorage.getItem('authToken');
+    let tokenValue = '';
+    try {
+      // Parse the JSON token string before using it.
+      tokenValue = JSON.parse(storedToken).token;
+      console.log(tokenValue)
+    } catch (err) {
+      console.error("Error parsing token:", err);
+    }
 
     try {
       const res = await axios.post(
@@ -106,8 +115,7 @@ const AdminConceptUploadPage = () => {
         formData,
         {
           headers: { 
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${tokenValue}` // Removed explicit 'Content-Type'
           },
           onUploadProgress: (progressEvent) => {
             const percentCompleted = Math.round(
@@ -227,6 +235,22 @@ const AdminConceptUploadPage = () => {
                   />
                 </div>
               ))}
+              <div className={styles.inputContainer}>
+                <label htmlFor="bookTitle" className={styles.inputLabel}>
+                  Book Title
+                  <span className={styles.asterisk}>*</span>
+                </label>
+                <input
+                  id="bookTitle"
+                  type="text"
+                  placeholder="Enter book title"
+                  value={bookTitle}
+                  onChange={(e) => setBookTitle(e.target.value)}
+                  required
+                  disabled={uploadInProgress}
+                  className={styles.formInput}
+                />
+              </div>
             </div>
 
             <button 

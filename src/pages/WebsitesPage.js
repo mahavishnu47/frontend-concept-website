@@ -20,13 +20,13 @@ function WebsitesPage() {
 
   const fetchWebsites = async () => {
     setLoading(true);
-    // NEW: Use cache if no search term and default order criteria
+    // Updated: Use fallback empty array when reading cache data
     if (!searchTerm && orderCriteria === 'default') {
       const cache = localStorage.getItem("websitesCache");
       if (cache) {
         const parsed = JSON.parse(cache);
         if (Date.now() - parsed.timestamp < 10 * 60 * 1000) {
-          setWebsites(parsed.data);
+          setWebsites(parsed.data || []);
           setLoading(false);
           return;
         } else {
@@ -47,10 +47,14 @@ function WebsitesPage() {
         headers: { 'Authorization': `Bearer ${apiKey}` },
         params
       });
-      setWebsites(response.data.data);
+      // Ensure websites is always an array even if response shape varies.
+      const websitesData = Array.isArray(response.data)
+        ? response.data
+        : (Array.isArray(response.data.data) ? response.data.data : []);
+      setWebsites(websitesData);
       // NEW: Cache the data if no search and default ordering
       if (!searchTerm && orderCriteria === 'default') {
-        localStorage.setItem("websitesCache", JSON.stringify({ timestamp: Date.now(), data: response.data.data }));
+        localStorage.setItem("websitesCache", JSON.stringify({ timestamp: Date.now(), data: websitesData }));
       }
       setError(null);
     } catch (err) {
@@ -88,7 +92,8 @@ function WebsitesPage() {
   };
 
   // Derive filtered data from already fetched websites
-  const filteredWebsites = websites.filter(website => 
+  // Updated: Guard against undefined websites in filter
+  const filteredWebsites = (websites || []).filter(website => 
     website.concept_name && website.concept_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   

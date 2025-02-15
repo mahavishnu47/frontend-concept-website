@@ -1,0 +1,26 @@
+.adminPage {
+  background-color: #f5f5f5;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.message {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.bookTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bookTable th,
+.bookTable td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.bookTable th {
+  background-color: #e0e0e0;
+}
